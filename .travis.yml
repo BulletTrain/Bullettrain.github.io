@@ -24,14 +24,13 @@ after_success:
  # - npm install -g gulp
 
 #after_script:
-#  - cd ./public
-#  - git init
-#  - git config user.name "bullettrain1433"
-#  - git config user.email "bullettrain1433@gmail.com"
-#  - git add .
-#  - git commit -m "Update docs"
-#  - git push --force --quiet "https://${githubblog}@${GH_REF}" master:master
-# E: Build LifeCycle
+  - cd ./public
+  - git init
+  - git config user.name "bullettrain1433"
+  - git config user.email "bullettrain1433@gmail.com"
+  - git add .
+  - git commit -m "Update docs"
+  - git push --force --quiet "https://${githubblog}@${GH_REF}" master:master
 
 branches:
   only:
