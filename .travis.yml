@@ -23,7 +23,7 @@ after_success:
 #before_script:
  # - npm install -g gulp
 
-#after_script:
+after_script:
   - cd ./public
   - git init
   - git config user.name "bullettrain1433"
