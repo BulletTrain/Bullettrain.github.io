@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: icarus
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -122,14 +122,3 @@ since: 2014
 # =============================================================================
 # End NexT Theme configuration
 # =============================================================================
-
--
-    type: profile
-    position: right# show in left or right sidebar
-    author: Rechael# your name
-    author_title: 不忘初心，方得始终。# your title
-    location: # where are you
-    avatar: /uploads/avatar.jpg# path or url to your avatar image
-    gravatar: bullettrain1433@gmail.com# your gravatar email
-    follow_link: # path or url to any page you want
-    social_links: # add links to your social network here
