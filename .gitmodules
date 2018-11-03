@@ -4,6 +4,3 @@
 [submodule "themes/icarus"]
 	path = themes/icarus
 	url = https://github.com/BulletTrain/hexo-theme-icarus.git
-[submodule "themes/hexo"]
-	path = themes/hexo
-	url = git@github.com:BulletTrain/hexo-theme-next.git
