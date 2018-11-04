@@ -8,4 +8,4 @@ tags: [sdk,镜像]
 
 提供一个不需要fq就能直接在线更新办法
 如下：
-![添加镜像](http://bullettrain1433.qiniudn.com/QQ20150210-1@2x.png)
+![添加镜像](https://blog.flyada.com/images/QQ20150210-1@2x.png)

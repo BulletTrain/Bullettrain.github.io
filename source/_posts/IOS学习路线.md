@@ -10,4 +10,4 @@ tags: 学习路线
 
 **ios学习路线总流程图**
 
-![ios学习路线](http://justonthewayblog.qiniudn.com/ios学习路线.png)
+![ios学习路线](https://blog.flyada.com/images/ios学习路线.png)

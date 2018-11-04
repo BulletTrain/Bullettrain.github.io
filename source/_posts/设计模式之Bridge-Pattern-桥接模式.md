@@ -22,7 +22,7 @@ tags: Bridge Pattern
 
 如下：
 
-![不同维度](http://bullettrain1433.qiniudn.com/桥接模式20150306165224643)
+![不同维度](https://blog.flyada.com/images/桥接模式20150306165224643)
 
 ## UML类图
 

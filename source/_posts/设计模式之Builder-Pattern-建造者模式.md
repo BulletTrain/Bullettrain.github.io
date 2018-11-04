@@ -22,7 +22,7 @@ tags: Builder Pattern
 
 ## UML类图结构
 
-![UML类图](http://7jptnz.com1.z0.glb.clouddn.com/Build%20Parttern%20UML.png)
+![UML类图](https://blog.flyada.com/images/Build%20Parttern%20UML.png)
 
 ## 参与者
 
