@@ -40,7 +40,7 @@ git reset --soft HEAD^
 
 ## 增加下几个常用参数：
 
-###--mixed 
+--mixed 
 
 意思是：不删除工作空间改动代码，撤销commit，并且撤销git add . 操作
 
@@ -48,13 +48,13 @@ git reset --soft HEAD^
 
  
 
-###--soft  
+--soft  
 
 不删除工作空间改动代码，撤销commit，不撤销git add . 
 
  
 
-## --hard
+--hard
 
 删除工作空间改动代码，撤销commit，撤销git add . 
 
@@ -64,7 +64,7 @@ git reset --soft HEAD^
 
  
 
-### 如果commit注释写错了，只是想改一下注释，只需要：
+如果commit注释写错了，只是想改一下注释，只需要：
 
 git commit --amend
 
