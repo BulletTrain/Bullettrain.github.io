@@ -44,7 +44,7 @@ git reset --soft HEAD^
 
 意思是：不删除工作空间改动代码，撤销commit，并且撤销git add . 操作
 
-这个为默认参数,git reset --mixed HEAD^ 和 git reset HEAD^ 效果是一样的。
+这个为默认参数,`git reset --mixed HEAD^` 和 `git reset HEAD^` 效果是一样的。
 
  
 
@@ -69,3 +69,5 @@ git reset --soft HEAD^
 git commit --amend
 
 此时会进入默认vim编辑器，修改注释完毕后保存就好了。
+
+
