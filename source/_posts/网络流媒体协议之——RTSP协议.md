@@ -12,7 +12,7 @@ tags: RTSP
 
 RTSP作为一个应用层协议，提供了一个可供扩展的框架，使得流媒体的受控和点播变得可能，它主要用来控制具有实时特性的数据的发送，但其本身并不用于传送流媒体数据，而必须依赖下层传输协议(如RTP/RTCP)所提供的服务来完成流媒体数据的传送。RTSP负责定义具体的控制信息、操作方法、状态码，以及描述与RTP之间的交互操作。RTSP媒体服务协议框架如下：
 
-![20180129171755489.png](https://blog.flyada.com/images/20180129171755489.png)
+![20180129171755489.png](https://www.flyada.com/images/20180129171755489.png)
 
 RTSP包含Normal RTSP(数据通过RTP传输，应用厂商有苹果和微软等)，以及Real-RTSP(数据通过RDT传输)。本篇我们主要讲Normal RTSP。
 
@@ -20,7 +20,7 @@ RTSP传输的一般是TS、MP4格式的流，其传输一般需要2~3个通道�
 
 
 
-![20180129172009167.png](https://blog.flyada.com/images/20180129172009167.png)
+![20180129172009167.png](https://www.flyada.com/images/20180129172009167.png)
 
 
 
@@ -42,13 +42,13 @@ RTSP是一种基于文本的协议，用CRLF(回车换行)作为每一行的结�
 
 RTSP请求报文的常用方法与作用：
 
-![](https://blog.flyada.com/images/20180129172557653.png)
+![](https://www.flyada.com/images/20180129172557653.png)
 
 
 
 一次基本的RTSP交互过程如下，C表示客户端，S表示服务端。
 
-![](https://blog.flyada.com/images/20180129172708829.png)
+![](https://www.flyada.com/images/20180129172708829.png)
 
 
 

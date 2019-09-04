@@ -19,7 +19,7 @@ tags: Memento Pattern
 
 ## UML类图
 
-![备忘录UML类图](https://blog.flyada.com/images/%E5%A4%87%E5%BF%98%E5%BD%95UML%E7%B1%BB%E5%9B%BE.png)
+![备忘录UML类图](https://www.flyada.com/images/%E5%A4%87%E5%BF%98%E5%BD%95UML%E7%B1%BB%E5%9B%BE.png)
 
 ## 参与者
 

@@ -18,14 +18,14 @@ tags: [xcode6,pch]
 
 1，Command+N，打开新建文件窗口：ios->other->PCH file，创建一个pch文件：“工程名-Prefix.pch”：
 
-![图片1](https://blog.flyada.com/images/QQ20150324-1.png)
+![图片1](https://www.flyada.com/images/QQ20150324-1.png)
 
 2，将building setting中的precompile header选项的路径添加“$(SRCROOT)/项目名称/pch文件名”（例如：$(SRCROOT)/xx/xx-Prefix.pch）
 
-![图片2](https://blog.flyada.com/images/QQ20150324-2.png)
+![图片2](https://www.flyada.com/images/QQ20150324-2.png)
 
 可以了，编译一下程序，如果有错误检查一下添加的路径是否正确。
 
 3，将Precompile Prefix Header为YES，预编译后的pch文件会被缓存起来，可以提高编译速度
 
-![图片3](https://blog.flyada.com/images/QQ20150324-3.png)
+![图片3](https://www.flyada.com/images/QQ20150324-3.png)
