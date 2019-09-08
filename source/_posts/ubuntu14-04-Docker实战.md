@@ -2,6 +2,7 @@ title: ubuntu14.04 Docker实战
 date: 2015-04-20 15:50:20
 categories: linux
 tags: docker
+copyright: true
 
 ---
 参考自[docker官网](https://www.docker.com/)
@@ -125,10 +126,14 @@ $ sudo docker push ubuntu:14.04b
 加载仓库镜像 
 
 ```
-# cd /# docker load < xx.tar.gz
-```查看导入的仓库镜像
+# cd /
+# docker load < xx.tar.gz
+```
 
-```# docker images
+查看导入的仓库镜像
+
+```
+# docker images
 ```
 
 启动仓库容器
@@ -145,35 +150,76 @@ $ sudo docker push ubuntu:14.04b
 
 ##docker常用操作
 
-###镜像导入- load方式导入镜像
+###镜像导入
 
-```用法:docker load < 导入的文件名称示例:docker load < nginx_v1.0.tar.gz 在服务器上加载镜像```- import导入镜像文件
+- load方式导入镜像
 
-```用法:cat 文件名称 | docker import - [REPOSITORY][:tag]示例: nginx_v1.0.tar.gz | docker import - 导入不打tag的镜像示例: nginx_v1.0.tar.gz | docker import - 192.168.83.107:5000/nginx:v1 导入打tag的镜像镜像更改
-```- 修改镜像tag
+```
+用法:docker load < 导入的文件名称
+示例:docker load < nginx_v1.0.tar.gz 在服务器上加载镜像
+```
+- import导入镜像文件
 
-```用法:docker tag 镜像ID REPOSITORY:tag 示例:docker tag d6 192.168.83.107:5000/nginx:v1
-```- 删除镜像tag
+```
+用法:cat 文件名称 | docker import - [REPOSITORY][:tag]
+示例: nginx_v1.0.tar.gz | docker import - 导入不打tag的镜像
+示例: nginx_v1.0.tar.gz | docker import - 192.168.83.107:5000/nginx:v1 导入打tag的镜像
+镜像更改
+```
 
-```用法:docker rmi REPOSITORY:tag示例:docker rmi 192.168.83.107:5000/nginx:v1容器
-```- 启动docker容器
+- 修改镜像tag
 
-```用法:docker run [OPTIONS] IMAGE [COMMAND] [ARG...]示例:docker run -it --name=nginx --net=host --privileged=true --restart=always 192.168.83.107:5000/nginx:v1 
+```
+用法:docker tag 镜像ID REPOSITORY:tag 示例:docker tag d6 192.168.83.107:5000/nginx:v1
+```
+
+- 删除镜像tag
+
+```
+用法:docker rmi REPOSITORY:tag
+示例:docker rmi 192.168.83.107:5000/nginx:v1
+容器
+```
+
+- 启动docker容器
+
+```
+用法:docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+示例:docker run -it --name=nginx --net=host --privileged=true --restart=always 192.168.83.107:5000/nginx:v1 
 启动容器 
-示例:docker run -it --name=nginx --net=host --restart=always --privileged=true 192.168.83.107:5000/nginx:v1 /bin/bash 以shell的方式启动容器 
-退出容器ctrl+p+q退出容器  以交互式方式登录容器后可以采用上述方式退出镜像上传下载
+示例:docker run -it --name=nginx --net=host --restart=always --privileged=true 192.168.83.107:5000/nginx:v1 /bin/bash 以
+shell的方式启动容器 
+退出容器
+ctrl+p+q退出容器
+  以交互式方式登录容器后可以采用上述方式退出
+镜像上传下载
 ```
-- push镜像到仓库
 
-```用法:docker push REPOSITORY:tag示例:docker push 192.168.83.107:5000/nginx:v1 备注:在向私有仓库push镜像的时候需要在docker客户机器的docker文件中增加如下内容(标红内容):vi /etc/default/dockerDOCKER_OPTS="--insecure-registry 192.168.83.107:5000" // DOCKER_OPTS="--insecure-registry 仓库服务器地址:5000" service docker restart //重启docker服务生效
+- push镜像到仓库
+
 ```
-- pull镜像到本地
+用法:docker push REPOSITORY:tag
+示例:docker push 192.168.83.107:5000/nginx:v1 备注:在向私有仓库push镜像的时候需要在docker客户机器的docker文件中增加如下内容(标红内容):
+vi /etc/default/docker
+DOCKER_OPTS="--insecure-registry 192.168.83.107:5000" // DOCKER_OPTS="--insecure-registry 仓库服务器地址:5000" service docker restart //重启docker服务生效
+```
 
-```用法:docker pull REPOSITORY:tag示例:docker pull 192.168.83.107:5000/nginx:v1镜像导出
-```- save方式导出镜像
+- pull镜像到本地
 
-```用法:docker save -o 导出的文件名称 镜像ID 示例:docker save -o=nginx_v1.0.tar.gz b8053ab2e5d3 备注:该导出方式导出的对象是镜像
-```- export方式导出镜像
+```
+用法:docker pull REPOSITORY:tag
+示例:docker pull 192.168.83.107:5000/nginx:v1
+镜像导出
+```
 
-```用法:docker export 容器ID > 导出的文件路径及导出的文件名称示例:docker export 8c71d5f9e436 > ./nginx_v1.0.tar.gz 备注:该导出方式导出的对象为容器,save方式导出的文件比export方式导出的文件小
+- save方式导出镜像
+
+```
+用法:docker save -o 导出的文件名称 镜像ID 示例:docker save -o=nginx_v1.0.tar.gz b8053ab2e5d3 备注:该导出方式导出的对象是镜像
+```
+- export方式导出镜像
+
+```
+用法:docker export 容器ID > 导出的文件路径及导出的文件名称
+示例:docker export 8c71d5f9e436 > ./nginx_v1.0.tar.gz 备注:该导出方式导出的对象为容器,save方式导出的文件比export方式导出的文件小
 ```

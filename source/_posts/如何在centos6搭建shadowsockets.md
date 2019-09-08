@@ -2,6 +2,7 @@ title: 如何在centos6搭建shadowsockets
 date: 2014-11-30 18:56:49
 categories: linux
 tags: [shadowsockets,翻墙]
+copyright: true
 
 ---
 

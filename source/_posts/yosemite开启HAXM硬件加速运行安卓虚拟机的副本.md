@@ -8,6 +8,8 @@ tags: [android,intel]
 
 copyright: true
 
+copyright: true
+
 ------
 
 android sdk安装HAXM发现不能正常运行

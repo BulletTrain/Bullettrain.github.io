@@ -6,6 +6,8 @@ categories: iOS
 
 tags: [schemes,iOS10]
 
+copyright: true
+
 ------
 
 - `电池电量` Prefs:root=BATTERY_USAGE

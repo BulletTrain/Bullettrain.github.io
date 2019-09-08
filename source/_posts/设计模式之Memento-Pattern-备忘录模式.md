@@ -6,6 +6,8 @@ categories: 设计模式
 
 tags: Memento Pattern
 
+copyright: true
+
 -----
 
 ## 简介

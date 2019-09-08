@@ -2,6 +2,7 @@ title: Fragment生命周期
 date: 2014-11-23 10:40:21
 categories: android
 tags: Fragment
+copyright: true
 
 ---
 ###Fragment生命周期

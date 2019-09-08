@@ -6,6 +6,8 @@ categories: 音频视频
 
 tags: RTSP
 
+copyright: true
+
 ------
 
 >RTSP(Real-Time Stream Protocol)协议是一个基于文本的多媒体播放控制协议，属于应用层。RTSP以客户端方式工作，对流媒体提供播放、暂停、后退、前进等操作。该标准由IETF指定，对应的协议是RFC2326。

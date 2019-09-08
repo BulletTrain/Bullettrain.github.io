@@ -6,6 +6,8 @@ categories: 设计模式
 
 tags: Mediator Pattern
 
+copyright: true
+
 -----
 
 ## 概述

@@ -2,6 +2,7 @@ title: "如何解决Android 5.0中出现的警告：Service Intent must be expli
 date: 2015-06-27 13:49:05
 categories: android
 tags: [android5.0,service]
+copyright: true
 
 ---
 有些时候我们使用Service的时需要采用隐私启动的方式，但是Android 5.0一出来后，其中有个特性就是`Service Intent  must be explitict`，也就是说从`Lollipop`开始，`service`服务必须采用显示方式启动。

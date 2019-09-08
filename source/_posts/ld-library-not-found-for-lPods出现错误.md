@@ -6,6 +6,8 @@ categories: iOS
 
 tags: iOS
 
+copyright: true
+
 ------
 
 若出现`ld: library not found for -lPods` 类似的错误，

@@ -2,6 +2,7 @@ title: shell复习6-gawk与sed
 date: 2015-01-15 11:08:38
 categories: linux
 tags: [shell,gawk,sed]
+copyright: true
 
 ---
 ##过滤器gawk(awk的GNU版本)

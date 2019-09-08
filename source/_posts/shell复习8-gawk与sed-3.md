@@ -2,6 +2,7 @@ title: shell复习8-gawk与sed(3)
 date: 2015-01-21 15:23:24
 categories: linux
 tags: [shell,sed]
+copyright: true
 
 ---
 ##流编辑器sed

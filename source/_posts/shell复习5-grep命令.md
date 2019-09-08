@@ -2,6 +2,7 @@ title: shell复习5-grep命令
 date: 2015-01-14 16:14:52
 categories: linux
 tags: shell
+copyright: true
 
 ---
 #grep命令

@@ -2,6 +2,7 @@ title: 设计模式之Decorator Pattern(装饰模式)
 date: 2015-04-29 16:59:59
 categories: 设计模式
 tags: Decorator Pattern
+copyright: true
 
 ------
 ##简介

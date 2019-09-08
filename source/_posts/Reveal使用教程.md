@@ -6,6 +6,8 @@ categories: iOS
 
 tags: Reveal
 
+copyright: true
+
 ------
 
 打开Reveal

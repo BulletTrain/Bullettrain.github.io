@@ -6,6 +6,8 @@ categories: Tools
 
 tags: Git
 
+copyright: true
+
 ------
 
 

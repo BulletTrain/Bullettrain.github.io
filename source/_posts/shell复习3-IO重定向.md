@@ -2,6 +2,7 @@ title: shell复习3-IO重定向
 date: 2015-01-14 16:14:13
 categories: linux
 tags: shell
+copyright: true
 
 ---
 - 输出重定向 (<)

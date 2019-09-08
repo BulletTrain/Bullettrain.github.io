@@ -6,6 +6,8 @@ categories: iOS
 
 tags: 学习路线
 
+copyright: true
+
 ------
 
 **ios学习路线总流程图**

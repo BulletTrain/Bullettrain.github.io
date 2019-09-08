@@ -6,6 +6,8 @@ categories: iOS
 
 tags: iOS
 
+copyright: true
+
 ------
 
 [极光推送指南](http://docs.jpush.cn/pages/viewpage.action?pageId=1343727)

@@ -6,6 +6,8 @@ categories: iOS
 
 tags: Ruby
 
+copyright: true
+
 ------
 
 ## 安装系统需要的包

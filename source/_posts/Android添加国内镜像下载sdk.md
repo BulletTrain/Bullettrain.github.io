@@ -2,6 +2,7 @@ title: Android添加国内镜像下载sdk
 date: 2015-02-10 16:13:46
 categories: android
 tags: [sdk,镜像]
+copyright: true
 
 ---
 使用android sdk manager无法更新，必须要fq

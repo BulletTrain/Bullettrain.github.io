@@ -2,6 +2,7 @@ title: nginx反向代理oracle数据库
 date: 2014-12-30 20:17:43
 categories: linux
 tags: [nginx,oracle]
+copyright: true
 
 ---
 

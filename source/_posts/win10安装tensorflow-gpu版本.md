@@ -6,6 +6,8 @@ categories: 深度学习
 
 tags: [tensorflow,win10]
 
+copyright: true
+
 ------
 
 ## 安装前准备

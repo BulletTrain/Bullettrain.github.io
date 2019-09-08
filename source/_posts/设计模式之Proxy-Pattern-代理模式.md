@@ -2,6 +2,7 @@ title: 设计模式之Proxy Pattern(代理模式)
 date: 2015-04-30 10:56:08
 categories: 设计模式
 tags: Proxy Pattern
+copyright: true
 
 ------
 ##简介

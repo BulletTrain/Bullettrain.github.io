@@ -2,6 +2,7 @@ title: shell复习2-引号用法
 date: 2015-01-14 16:14:01
 categories: linux
 tags: shell
+copyright: true
 
 ---
 ##引号的用法

@@ -2,6 +2,7 @@ title: linux扩展根分区
 date: 2015-01-15 16:41:06
 categories: linux
 tags: 分区
+copyright: true
 
 ---
 

@@ -6,6 +6,8 @@ categories: iOS
 
 tags: Objective-C
 
+copyright: true
+
 ------
 
 ### 基本比较运算符

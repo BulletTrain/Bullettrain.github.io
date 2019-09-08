@@ -2,6 +2,7 @@ title: android中ellipsize使用
 date: 2014-11-23 13:57:12
 categories: android
 tags: ellipsize
+copyright: true
 
 ---
 
