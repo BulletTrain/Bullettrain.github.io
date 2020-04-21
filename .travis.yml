@@ -4,7 +4,6 @@ node_js: stable
 before_install:
 - export TZ='Asia/Shanghai'  
 - npm install -g hexo
-- npm install -g hexo-cli 
 - npm install -- save-dev hexo-util
 - npm install -- save-dev hexo-fs
 before_script:
