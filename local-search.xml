@@ -1,0 +1,1180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>拥抱Flutter之Flutter总知识点</title>
+    <link href="/2020/04/20/%E6%8B%A5%E6%8A%B1flutter%E4%B9%8Bflutter%E6%80%BB%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    <url>/2020/04/20/%E6%8B%A5%E6%8A%B1flutter%E4%B9%8Bflutter%E6%80%BB%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
+    
+    <content type="html"><![CDATA[<p><strong>Flutter大体知识总流程图</strong></p><p><img src="https://www.flyada.com/images/flutter%E7%9F%A5%E8%AF%86%E7%82%B9.png" srcset="/img/loading.gif" alt="flutter知识点"></p><p>此图使用百度脑图总结，参考网友分享及官方文档特此整理，以此为总体提纲，带着学习目的下面我陆续详情剖析，尽情期待</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Flutter</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>学习路线</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>群晖ds218+旁路由实战</title>
+    <link href="/2019/09/07/%E7%BE%A4%E6%99%96ds218+%E6%97%81%E8%B7%AF%E7%94%B1%E5%AE%9E%E6%88%98/"/>
+    <url>/2019/09/07/%E7%BE%A4%E6%99%96ds218+%E6%97%81%E8%B7%AF%E7%94%B1%E5%AE%9E%E6%88%98/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>迫于家里的华硕路由刷了梅林后，导致cpu经常爆90%到100%,经常性温度特别高，不得不隔断时间就要重启,非常影响体验，一气之下又刷回了官方固件，各种稳定，爽歪歪，代价也就没有了梅林的各种插件，少了不少便利。</p></blockquote><p>一直在网上找寻各种方案，得出以下三个方案</p><ul><li>方案一 换路由，上ac86u，配置足够满足需求，好心水，就是价格太贵网上反映好像还有断流现象</li><li>方案二 上软路由，ROS+LEDE方案，优点是软路由稳定性配置还有定制性秒杀硬路由，缺点就是贵，发热也是问题，弱电箱能否放下也是问题</li><li>方案三 旁路由解决方案，市面上常用的香橙派等体积小巧配置够用，发热功耗也还好，缺点就是不知道质量能否保证长期稳定运行</li></ul><p>思索再三，方案一迫于价格太贵，一直下不了手，方案二也是考虑价格以及后续问题没下手，就剩下方案三的方案了，香橙派倒是不贵，体积也小，但是弱电箱好像插座不够了，两个已插满，很是纠结。。。。</p><p>这时候，坐上我的人体工程学椅子，45度仰天思考，群晖的三个小灯亮瞎我的24k金狗眼，对，群晖不是有vmm可以装lede，能否考虑下做个旁路由，满足家里需求，所以开干</p><h3 id="第一步-下载镜像"><a href="#第一步-下载镜像" class="headerlink" title="第一步 下载镜像"></a>第一步 下载镜像</h3><p>前往 <a href="https://firmware.koolshare.cn/LEDE_X64_fw867/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BD%AC%E7%9B%98%E6%88%96PE%E4%B8%8B%E5%86%99%E7%9B%98%E4%B8%93%E7%94%A8/" target="_blank" rel="noopener">Koolshare LEDE x64 固件下载页</a> 中下载文件名包含 combined-squashfs 的固件，解压 gz 得到 img 文件。</p><h3 id="第二步-配置vmm"><a href="#第二步-配置vmm" class="headerlink" title="第二步 配置vmm"></a>第二步 配置vmm</h3><p>群晖提供了一个虚拟机服务 Virtual Machine Manager（简称 VMM），系统中默认没有安装，需要去套件中心下载安装并启用。<br><img src="https://www.flyada.com/images/QQ20190908-002002.png" srcset="/img/loading.gif" alt="QQ20190908-002002"></p><p>在群晖的管理界面中打开 VMM，点击左侧「存储」进入存储管理。点击「新增」，选择用于安装和存储虚拟机的硬盘。</p><p>创建好存储以后在「VMM - 映像 - 新增」中上传之前解压出来的 img 文件。设置名称、选择从计算机上传。<img src="https://www.flyada.com/images/QQ20190908-002047.png" srcset="/img/loading.gif" alt="QQ20190908-002047"></p><p> 上传成功以后可以看到上传的映像出现在列表中。</p><p>在「VMM - 网络」中设置虚拟交换机。迫于我的ds218+只有一个千兆网口，所以 Default VM Network 默认就已经绑定在唯一的网口下面了。点击 Default VM Network，删除。然后点击「新增」开始创建新的虚拟交换机。<img src="https://www.flyada.com/images/QQ20190908-002924.png" srcset="/img/loading.gif" alt="QQ20190908-002924"></p><p>现在 VMM 已经基本已经配置完毕，可以创建虚拟机了。</p><h3 id="第三步-新建虚拟机"><a href="#第三步-新建虚拟机" class="headerlink" title="第三步 新建虚拟机"></a>第三步 新建虚拟机</h3><p>在「VMM - 虚拟机」中，在「新增」按钮边上的下拉菜单（那个三角尖）中选择「导入」，在导入方式中选择「从硬盘映像导入」，并找到刚才上传的映像。<img src="https://www.flyada.com/images/QQ20190908-002310.png" srcset="/img/loading.gif" alt="QQ20190908-002310"></p><p>选择存储空间配置虚拟机规格，推荐 双核 + 2G 内存（迫于我的加了4g内存，现在6g内存绰绰有余），显卡就用默认配置就行了。<img src="https://www.flyada.com/images/QQ20190908-002211.png" srcset="/img/loading.gif" alt="QQ20190908-002211"></p><p>下一步是存储空间相关设置。通过硬盘映像导入的虚拟机强制使用 10G 硬盘，实际上是动态占用的，不用担心。<br><img src="https://www.flyada.com/images/QQ20190908-002328.png" srcset="/img/loading.gif" alt="QQ20190908-002328"></p><p>网络，我之前只创建了一个虚拟交换机，所以这里已经添加好了唯一的虚拟交换机。如果你是多网口 NAS 做软路由、那么还要通过「+」添加之前创建的多个虚拟交换机。</p><p>都确认完毕后，这个时候先不要选择自动启动，等后面配置完了再修改，这步<strong>很重要</strong><img src="https://www.flyada.com/images/QQ20190908-002448.png" srcset="/img/loading.gif" alt="QQ20190908-002448"></p><h3 id="第四步-配置网络"><a href="#第四步-配置网络" class="headerlink" title="第四步 配置网络"></a>第四步 配置网络</h3><p>在「VMM - 虚拟机」中找到 Koolshare lede，点击「连接」进入。开机之后内核日志不再滚动（出现 br-lan: link is ready）以后按下回车，进入命令行。</p><p>使用 vim /etc/config/network 进入接口编辑，修改 LAN 口配置。比如我的群晖接在我的主路由下面，网段是 192.168.1.1，我的 NAS 分配了 192.168.1.120，于是我给 Koolshare LEDE 分配了 192.168.1.200，子网掩码保持 255.255.255.0 不变，网卡是 NAS 唯一的网口 eth0 保持不变）。</p><p>修改完以后使用 /etc/init.d/network restart 重启网卡以生效配置。当然你也可以用 reboot 达到相同的效果。</p><h3 id="第五步-配置LEDE"><a href="#第五步-配置LEDE" class="headerlink" title="第五步 配置LEDE"></a>第五步 配置LEDE</h3><p>如果上面配置顺利，这时候直接在网站输入192.168.1.200就能进入LEDE管理界面<br><img src="https://www.flyada.com/images/QQ20190908-004118.png" srcset="/img/loading.gif" alt="QQ20190908-004118"></p><p>默认的密码是koolshare,登录进入可以修改密码<br><img src="https://www.flyada.com/images/QQ20190908-004219.png" srcset="/img/loading.gif" alt="QQ20190908-004219"></p><p>第一次网口状态并不是全双工，显示半双工<br>需要关闭LEDE，在网络设置里选择1000那个选项，在重启下LEDE，就可以看到全双工了</p><p>这时候可以在酷软商店下载各种插件使用了<br><img src="https://www.flyada.com/images/QQ20190908-004312.png" srcset="/img/loading.gif" alt="QQ20190908-004312"></p><p>酷软下架的一些插件可以在<a href="https://github.com/hq450/fancyss_history_package/tree/master/fancyss_X64" target="_blank" rel="noopener">这里取</a>，然后离线安装</p><blockquote><p>2019年9月8日添加</p></blockquote><p>因为是旁路由，删除相关wan口</p><p><img src="https://www.flyada.com/images/WX20190908-131303.png" srcset="/img/loading.gif" alt="WX20190908-131303"></p><p>lan口配置如下</p><p><img src="https://www.flyada.com/images/WX20190908-131426.png" srcset="/img/loading.gif" alt="WX20190908-131341"></p><p>为了确保旁路由的ip不变，主路由给dhcp固定下旁路由的mac绑定的ip不变，我的主路由是华硕的路由，所以我的设置如下，手动指定了旁路由的ip地址</p><p><img src="https://www.flyada.com/images/WX20190909-221447.png" srcset="/img/loading.gif" alt="WX20190909-221447">到达此部，旁路由配置基本就结束了</p><p>此时在主路由上网关改成192.168.1.200，就能全网使用旁路由的LEDE插件了，此时可以自行摸索了</p><p>哈哈😄，终于可以放心稳定了解决了家里网络的所有稳定。</p><p>因为操作之前也参考了一些文章</p><p>参考文章</p><ul><li><a href="https://blog.skk.moe/post/nas-dsm-vmm-lede/" target="_blank" rel="noopener">Sukka’s Blog</a></li><li><a href="https://www.jinbo123.com/7423.html" target="_blank" rel="noopener">佐仔志</a></li></ul><p>特此感谢作者</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>个人</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>群晖</tag>
+      
+      <tag>旁路由</tag>
+      
+      <tag>LEDE</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Git撤销未提交的commit操作</title>
+    <link href="/2018/11/20/Git%E6%92%A4%E9%94%80%E6%9C%AA%E6%8F%90%E4%BA%A4%E7%9A%84commit%E6%93%8D%E4%BD%9C/"/>
+    <url>/2018/11/20/Git%E6%92%A4%E9%94%80%E6%9C%AA%E6%8F%90%E4%BA%A4%E7%9A%84commit%E6%93%8D%E4%BD%9C/</url>
+    
+    <content type="html"><![CDATA[<p>git add . //添加所有文件</p><p>git commit -m “本功能全部完成”</p><p>执行完commit后，想撤回commit，怎么办？</p><p>这样办：</p><pre><code class="hljs shell">git reset --soft HEAD^</code></pre><p>这样就成功的撤销了你的commit</p><p>注意，仅仅是撤回commit操作，您写的代码仍然保留。</p><h2 id="增加下几个常用参数："><a href="#增加下几个常用参数：" class="headerlink" title="增加下几个常用参数："></a>增加下几个常用参数：</h2><p>–mixed </p><p>意思是：不删除工作空间改动代码，撤销commit，并且撤销git add . 操作</p><p>这个为默认参数,<code>git reset --mixed HEAD^</code> 和 <code>git reset HEAD^</code> 效果是一样的。</p><p>–soft  </p><p>不删除工作空间改动代码，撤销commit，不撤销git add . </p><p>–hard</p><p>删除工作空间改动代码，撤销commit，撤销git add . </p><p>注意完成这个操作后，就恢复到了上一次的commit状态。</p><p>如果commit注释写错了，只是想改一下注释，只需要：</p><p>git commit –amend</p><p>此时会进入默认vim编辑器，修改注释完毕后保存就好了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Tools</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>网络流媒体协议之——RTSP协议</title>
+    <link href="/2018/05/03/%E7%BD%91%E7%BB%9C%E6%B5%81%E5%AA%92%E4%BD%93%E5%8D%8F%E8%AE%AE%E4%B9%8B%E2%80%94%E2%80%94RTSP%E5%8D%8F%E8%AE%AE/"/>
+    <url>/2018/05/03/%E7%BD%91%E7%BB%9C%E6%B5%81%E5%AA%92%E4%BD%93%E5%8D%8F%E8%AE%AE%E4%B9%8B%E2%80%94%E2%80%94RTSP%E5%8D%8F%E8%AE%AE/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>RTSP(Real-Time Stream Protocol)协议是一个基于文本的多媒体播放控制协议，属于应用层。RTSP以客户端方式工作，对流媒体提供播放、暂停、后退、前进等操作。该标准由IETF指定，对应的协议是RFC2326。</p></blockquote><p>RTSP作为一个应用层协议，提供了一个可供扩展的框架，使得流媒体的受控和点播变得可能，它主要用来控制具有实时特性的数据的发送，但其本身并不用于传送流媒体数据，而必须依赖下层传输协议(如RTP/RTCP)所提供的服务来完成流媒体数据的传送。RTSP负责定义具体的控制信息、操作方法、状态码，以及描述与RTP之间的交互操作。RTSP媒体服务协议框架如下：</p><p><img src="https://www.flyada.com/images/20180129171755489.png" srcset="/img/loading.gif" alt="20180129171755489.png"></p><p>RTSP包含Normal RTSP(数据通过RTP传输，应用厂商有苹果和微软等)，以及Real-RTSP(数据通过RDT传输)。本篇我们主要讲Normal RTSP。</p><p>RTSP传输的一般是TS、MP4格式的流，其传输一般需要2~3个通道，命令和数据通道分离。使用RTSP协议传输流媒体数据需要有专门的媒体播放器和媒体服务器，也就是需要支持RTSP协议的客户端和服务器。</p><p><img src="https://www.flyada.com/images/20180129172009167.png" srcset="/img/loading.gif" alt="20180129172009167.png"></p><p>客户端要播放RTSP媒体流，就需要知道媒体源的URL，RTSP的URL格式一般如下：</p><p>rtsp://host[:port]/[abs_path]/content_name</p><p>host: 有效的域名或IP地址；</p><p>port: 端口号，缺省为554，若为缺省可不填写，否则必须写明。</p><p>##RTSP报文</p><p> 对RTSP协议的使用有了一个大概的了解之后，我们来看一下RTSP报文结构。</p><p>RTSP是一种基于文本的协议，用CRLF(回车换行)作为每一行的结束符，其好处是，在使用过程中可以方便地增加自定义参数，也方便抓包分析。从消息传送方向上来分，RTSP的报文有两类：请求报文和响应报文。请求报文是指从客户端向服务器发送的请求(也有少量从服务器向客户端发送的请求)，响应报文是指从服务器到客户端的回应。</p><p>RTSP请求报文的常用方法与作用：</p><p><img src="https://www.flyada.com/images/20180129172557653.png" srcset="/img/loading.gif" alt=""></p><p>一次基本的RTSP交互过程如下，C表示客户端，S表示服务端。</p><p><img src="https://www.flyada.com/images/20180129172708829.png" srcset="/img/loading.gif" alt=""></p><p>首先客户端连接到流媒体服务器并发送一个RTSP描述请求(DESCRIBE request)，服务器通过一个SDP(Session DescriptionProtocol)描述来进行反馈(DESCRIBEresponse)，反馈信息包括流数量、媒体类型等信息。客户端分析该SDP描述，并为会话中的每一个流发送一个RTSP连接建立请求(SETUPrequest)，该命令会告诉服务器用于接收媒体数据的端口，服务器响应该请求(SETUP response)并建立连接之后，就开始传送媒体流(RTP包)到客户端。在播放过程中客户端还可以向服务器发送请求来控制快进、快退和暂停等。最后，客户端可发送一个终止请求(TEARDOWN request)来结束流媒体会话.</p><p>下面我们通过具体的消息实例来进一步了解一下RTSP的工作过程：</p><ul><li><p>OPTIONS</p><blockquote><p>OPTIONS请求是客户端向服务器询问可用的方法，请求和回复实例如下：</p></blockquote><pre><code class="hljs html">C-&gt;S:  OPTIONS rtsp://example.com/media.mp4 RTSP/1.0         CSeq: 1         Require: implicit-play         Proxy-Require: gzipped-messages    S-&gt;C:  RTSP/1.0 200 OK         CSeq: 1         Public: DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE</code></pre></li></ul><ul><li><p>DESCRIBE</p><blockquote><p>客户端向服务器请求媒体资源描述，服务器端通过SDP(Session Description Protocol)格式回应客户端的请求。资源描述中会列出所请求媒体的媒体流及其相关信息，典型情况下，音频和视频分别作为一个媒体流传输。实例如下：</p></blockquote><pre><code class="hljs html">C-&gt;S: DESCRIBE rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 2    S-&gt;C: RTSP/1.0 200 OK        CSeq: 2        Content-Base: rtsp://example.com/media.mp4        Content-Type: application/sdp        Content-Length: 460          m=video 0 RTP/AVP 96        a=control:streamid=0        a=range:npt=0-7.741000        a=length:npt=7.741000        a=rtpmap:96 MP4V-ES/5544        a=mimetype:string;"video/MP4V-ES"        a=AvgBitRate:integer;304018        a=StreamName:string;"hinted video track"        m=audio 0 RTP/AVP 97        a=control:streamid=1        a=range:npt=0-7.712000        a=length:npt=7.712000        a=rtpmap:97 mpeg4-generic/32000/2        a=mimetype:string;"audio/mpeg4-generic"        a=AvgBitRate:integer;65790        a=StreamName:string;"hinted audio track"</code></pre></li></ul><ul><li><p>SETUP</p><blockquote><p>SETUP请求确定了具体的媒体流如何传输，该请求必须在PLAY请求之前发送。SETUP请求包含媒体流的URL和客户端用于接收RTP数据(audio or video)的端口以及接收RTCP数据(meta information)的端口。服务器端的回复通常包含客户端请求参数的确认，并会补充缺失的部分，比如服务器选择的发送端口。每一个媒体流在发送PLAY请求之前，都要首先通过SETUP请求来进行相应的配置。 </p></blockquote><pre><code class="hljs html">C-&gt;S: SETUP rtsp://example.com/media.mp4/streamid=0 RTSP/1.0        CSeq: 3        Transport: RTP/AVP;unicast;client_port=8000-8001    S-&gt;C: RTSP/1.0 200 OK        CSeq: 3        Transport: RTP/AVP;unicast;client_port=8000-8001;server_port=9000-9001;ssrc=1234ABCD        Session: 12345678</code></pre></li></ul><ul><li><p>PLAY</p><blockquote><p>客户端通过PLAY请求来播放一个或全部媒体流，PLAY请求可以发送一次或多次，发送一次时，URL为包含所有媒体流的地址，发送多次时，每一次请求携带的URL只包含一个相应的媒体流。PLAY请求中可指定播放的range，若未指定，则从媒体流的开始播放到结束，如果媒体流在播放过程中被暂停，则可在暂停处重新启动流的播放。</p></blockquote><pre><code class="hljs html">C-&gt;S: PLAY rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 4        Range: npt=5-20        Session: 12345678    S-&gt;C: RTSP/1.0 200 OK        CSeq: 4        Session: 12345678        RTP-Info: url=rtsp://example.com/media.mp4/streamid=0;seq=9810092;rtptime=3450012</code></pre></li></ul><ul><li><p>PAUSE</p><blockquote><p>PAUSE请求会暂停一个或所有媒体流，后续可通过PLAY请求恢复播放。PAUSE请求中携带所请求媒体流的URL，若参数range存在，则指明在何处暂停，若该参数不存在，则暂停立即生效，且暂停时长不确定。 </p></blockquote><pre><code class="hljs html">C-&gt;S: PAUSE rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 5        Session: 12345678    S-&gt;C: RTSP/1.0 200 OK        CSeq: 5        Session: 12345678</code></pre></li></ul><ul><li><p>TEARDOWN</p><blockquote><p>结束会话请求，该请求会停止所有媒体流，并释放服务器上的相关会话数据。</p></blockquote><pre><code class="hljs html">C-&gt;S: TEARDOWN rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 8        Session: 12345678    S-&gt;C: RTSP/1.0 200 OK        CSeq: 8</code></pre></li></ul><ul><li><p>GET_PARAMETER</p><blockquote><p>检索指定URI数据中的参数值。不携带消息体的GET_PARAMETER可用来测试服务器端或客户端是否可通(类似ping的功能)。</p></blockquote><pre><code class="hljs html">S-&gt;C: GET_PARAMETER rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 9        Content-Type: text/parameters        Session: 12345678        Content-Length: 15          packets_received        jitter    C-&gt;S: RTSP/1.0 200 OK        CSeq: 9        Content-Length: 46        Content-Type: text/parameters          packets_received: 10        jitter: 0.3838</code></pre></li></ul><ul><li><p>SET_PARAMETER</p><blockquote><p>用于设置指定媒体流的参数。</p></blockquote><pre><code class="hljs html">C-&gt;S: SET_PARAMETER rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 10        Content-length: 20        Content-type: text/parameters          barparam: barstuff    S-&gt;C: RTSP/1.0 451 Invalid Parameter        CSeq: 10        Content-length: 10        Content-type: text/parameters          barparam</code></pre></li></ul><ul><li><p>REDIRECT</p><blockquote><p>重定向请求，用于服务器通知客户端新的服务地址，客户端需要向这个新地址重新发起请求。重定向请求中可能包含Range参数，指明重定向生效的时间。客户端若需向新服务地址发起请求，必须先teardown当前会话，再向指定的新主机setup一个新的会话。</p></blockquote><pre><code class="hljs html">S-&gt;C: REDIRECT rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 11        Location: rtsp://bigserver.com:8001        Range: clock=19960213T143205Z-</code></pre></li></ul><ul><li><p>ANNOUNCE</p><blockquote><p>ANNOUNCE请求有两个用途：(1)C-&gt;S：客户端向服务器端发布URL指定的媒体信息描述；(2) S-&gt;C：实时更新对话描述。若媒体表示中新增了一个媒体流，例如在直播过程中，则整个媒体表示的description都要被重新发送，而不是只发送新增部分。</p></blockquote><pre><code class="hljs html">C-&gt;S: ANNOUNCE rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 7        Date: 23 Jan 1997 15:35:06 GMT        Session: 12345678        Content-Type: application/sdp        Content-Length: 332          v=0        o=mhandley 2890844526 2890845468 IN IP4 126.16.64.4        s=SDP Seminar        i=A Seminar on the session description protocol        u=http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps        e=mjh@isi.edu (Mark Handley)        c=IN IP4 224.2.17.12/127        t=2873397496 2873404696        a=recvonly        m=audio 3456 RTP/AVP 0        m=video 2232 RTP/AVP 31    S-&gt;C: RTSP/1.0 200 OK        CSeq: 7</code></pre></li></ul><ul><li><p>RECORD</p><blockquote><p>请求录制指定范围的媒体数据，请求中可指定录制的起止时间戳；若未指定时间范围，则使用presentation description中的开始和结束时间，这种情况下，如果会话已开始，则立即启动录制操作。</p></blockquote><pre><code class="hljs html">C-&gt;S: RECORD rtsp://example.com/media.mp4 RTSP/1.0        CSeq: 6        Session: 12345678    S-&gt;C: RTSP/1.0 200 OK        CSeq: 6        Session: 12345678</code></pre></li></ul><p>以上就是RTSP中常用的命令及其实例介绍。最后，来看一段实际使用的RTSP命令交互过程，该过程是通过PC对海康摄像头视频流的拉取和播放，并通过Wireshark抓取客户端的数据得到的：</p><pre><code class="hljs html">OPTIONS rtsp://10.3.8.202:554 RTSP/1.0  CSeq: 2  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)    RTSP/1.0 200 OK  CSeq: 2  Public: OPTIONS, DESCRIBE, PLAY, PAUSE, SETUP, TEARDOWN, SET_PARAMETER, GET_PARAMETER  Date:  Mon, Jan 29 2018 16:56:47 GMT    DESCRIBE rtsp://10.3.8.202:554 RTSP/1.0  CSeq: 3  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Accept: application/sdp    RTSP/1.0 401 Unauthorized  CSeq: 3  WWW-Authenticate: Digest realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", stale="FALSE"  Date:  Mon, Jan 29 2018 16:56:47 GMT    DESCRIBE rtsp://10.3.8.202:554 RTSP/1.0  CSeq: 4  Authorization: Digest username="admin", realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", uri="rtsp://10.3.8.202:554", response="3fc4b15d7a923fc36f32897e3cee69aa"  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Accept: application/sdp    RTSP/1.0 200 OK  CSeq: 4  Content-Type: application/sdp  Content-Base: rtsp://10.3.8.202:554/  Content-Length: 551    v=0  o=- 1517245007527432 1517245007527432 IN IP4 10.3.8.202  s=Media Presentation  e=NONE  b=AS:5050  t=0 0  a=control:rtsp://10.3.8.202:554/  m=video 0 RTP/AVP 96  c=IN IP4 0.0.0.0  b=AS:5000  a=recvonly  a=x-dimensions:2048,1536  a=control:rtsp://10.3.8.202:554/trackID=1  a=rtpmap:96 H264/90000  a=fmtp:96 profile-level-id=420029; packetization-mode=1; sprop-parameter-sets=Z00AMp2oCAAwabgICAoAAAMAAgAAAwBlCA==,aO48gA==  a=Media_header:MEDIAINFO=494D4B48010200000400000100000000000000000000000000000000000000000000000000000000;  a=appversion:1.0    SETUP rtsp://10.3.8.202:554/trackID=1 RTSP/1.0  CSeq: 5  Authorization: Digest username="admin", realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", uri="rtsp://10.3.8.202:554/", response="ddfbf3e268ae954979407369a104a620"  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Transport: RTP/AVP;unicast;client_port=57844-57845    RTSP/1.0 200 OK  CSeq: 5  Session:       1273222592;timeout=60  Transport: RTP/AVP;unicast;client_port=57844-57845;server_port=8218-8219;ssrc=5181c73a;mode="play"  Date:  Mon, Jan 29 2018 16:56:47 GMT    PLAY rtsp://10.3.8.202:554/ RTSP/1.0  CSeq: 6  Authorization: Digest username="admin", realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", uri="rtsp://10.3.8.202:554/", response="b5abf0b230de4b49d6c6d42569f88e91"  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Session: 1273222592  Range: npt=0.000-    RTSP/1.0 200 OK  CSeq: 6  Session:       1273222592  RTP-Info: url=rtsp://10.3.8.202:554/trackID=1;seq=65373;rtptime=3566398668  Date:  Mon, Jan 29 2018 16:56:47 GMT    GET_PARAMETER rtsp://10.3.8.202:554/ RTSP/1.0  CSeq: 7  Authorization: Digest username="admin", realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", uri="rtsp://10.3.8.202:554/", response="bb2309dcd083b25991c13e165673687b"  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Session: 1273222592    RTSP/1.0 200 OK  CSeq: 7  Date:  Mon, Jan 29 2018 16:56:47 GMT    TEARDOWN rtsp://10.3.8.202:554/ RTSP/1.0  CSeq: 8  Authorization: Digest username="admin", realm="IP Camera(10789)", nonce="6b9a455aec675b8db81a9ceb802e4eb8", uri="rtsp://10.3.8.202:554/", response="e08a15c27d3daac14fd4b4bcab424a5e"  User-Agent: LibVLC/2.2.8 (LIVE555 Streaming Media v2016.02.22)  Session: 1273222592    RTSP/1.0 200 OK  CSeq: 8  Session:       1273222592  Date:  Mon, Jan 29 2018 16:57:03 GMT</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>音频视频</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>RTSP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>win10安装tensorflow-gpu版本</title>
+    <link href="/2017/02/05/win10%E5%AE%89%E8%A3%85tensorflow-gpu%E7%89%88%E6%9C%AC/"/>
+    <url>/2017/02/05/win10%E5%AE%89%E8%A3%85tensorflow-gpu%E7%89%88%E6%9C%AC/</url>
+    
+    <content type="html"><![CDATA[<h2 id="安装前准备"><a href="#安装前准备" class="headerlink" title="安装前准备"></a>安装前准备</h2><p>TensorFlow 有两个版本：<strong>CPU</strong> 版本和 <strong>GPU</strong> 版本。GPU 版本需要 <strong>CUDA</strong> 和 <strong>cuDNN</strong> 的支持，CPU 版本不需要。如果你要安装 GPU 版本，<strong>请先确认你的显卡支持 CUDA</strong>。我安装的是 GPU 版本，采用 <strong>pip 安装方式</strong>，所以就以 GPU 安装为例，CPU 版本只不过不需要安装 CUDA 和 cuDNN。</p><ul><li>在 <a href="https://developer.nvidia.com/cuda-gpus" target="_blank" rel="noopener">这里</a> 确认你的显卡支持 CUDA。</li><li>确保你的Python版本是3.5 64位。</li><li>确保你有稳定的网络连接。</li><li>确保你的pip版本 &gt;= 8.1。用 <code>pip -V</code> 查看当前 <code>pip</code> 版本，用 <code>python -m pip install -U pip</code> 升级<code>pip</code> 。</li><li>确保你安装了 VS2015 或者 2013 或者 2010。</li></ul><p>此外，建议安装Anaconda，因为这个集成了很多科学计算所必需的库，能够避免很多依赖问题，安装教程可以参考官网。</p><p>以上条件符合，那么恭喜你可以开始下载 CUDA 和 cuDNN 的安装包了，注意版本号分别是 <strong>CUDA8</strong> 和 <strong>cuDNN5</strong>，这是 Google 官方推荐的。(记得fq去英伟达官网下)</p><h2 id="安装TensorFlow"><a href="#安装TensorFlow" class="headerlink" title="安装TensorFlow"></a>安装TensorFlow</h2><p>首先激活Anaconda</p><pre><code class="hljs powershell">C:\WINDOWS\system32&gt; activate tensorflow(tensorflow) C:\WINDOWS\system32&gt; pip install -<span class="hljs-literal">-ignore</span><span class="hljs-literal">-installed</span> -<span class="hljs-literal">-upgrade</span> https://storage.googleapis.com/tensorflow/windows/gpu/tensorflow_gpu<span class="hljs-literal">-0</span>.<span class="hljs-number">12.0</span><span class="hljs-literal">-cp35</span><span class="hljs-literal">-cp35m</span><span class="hljs-literal">-win_amd64</span>.whl</code></pre><p>然后自动就安装上了Tensorflow的gpu版本（记得全局fq）</p><h2 id="TensorFlow测试"><a href="#TensorFlow测试" class="headerlink" title="TensorFlow测试"></a>TensorFlow测试</h2><pre><code class="hljs powershell">C:\WINDOWS\system32&gt; python&gt;&gt;&gt; import tensorflow as tfI c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\stream_executor\dso_loader.cc:<span class="hljs-number">128</span>] successfully opened CUDA library cublas64_80.dll locallyI c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\stream_executor\dso_loader.cc:<span class="hljs-number">128</span>] successfully opened CUDA library cudnn64_5.dll locallyI c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\stream_executor\dso_loader.cc:<span class="hljs-number">128</span>] successfully opened CUDA library cufft64_80.dll locallyI c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\stream_executor\dso_loader.cc:<span class="hljs-number">128</span>] successfully opened CUDA library nvcuda.dll locallyI c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\stream_executor\dso_loader.cc:<span class="hljs-number">128</span>] successfully opened CUDA library curand64_80.dll locally&gt;&gt;&gt; hello = tf.constant(<span class="hljs-string">'Hello, TensorFlow!'</span>)&gt;&gt;&gt; sess = tf.Session()I c:\tf_jenkins\home\workspace\release<span class="hljs-literal">-win</span>\device\gpu\os\windows\tensorflow\core\common_runtime\gpu\gpu_device.cc:<span class="hljs-number">885</span>] Found device <span class="hljs-number">0</span> with properties:name: GeForce GTX <span class="hljs-number">970</span>major: <span class="hljs-number">5</span> minor: <span class="hljs-number">2</span> memoryClockRate (GHz) <span class="hljs-number">1.253</span>pciBusID <span class="hljs-number">0000</span>:<span class="hljs-number">02</span>:<span class="hljs-number">00.0</span>Total memory: <span class="hljs-number">4.00</span>GiBFree memory: <span class="hljs-number">3.31</span>GiB</code></pre><p>测试类似上面结果表示测试通过</p><p>然后所有安装就结束了，就可以做一些有意思的事情了</p><p>2017 /2/19 update</p><p>tensorflow-gpu版本已经更新到1.0</p><p>使用如下命令更新1.0版本</p><pre><code class="hljs powershell">(tensorflow) C:\WINDOWS\system32&gt;pip install tensorflow<span class="hljs-literal">-gpu</span>==<span class="hljs-number">1.0</span></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>深度学习</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>tensorflow</tag>
+      
+      <tag>win10</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>iOS10新的schemes跳转</title>
+    <link href="/2016/10/08/iOS10%E6%96%B0%E7%9A%84schemes%E8%B7%B3%E8%BD%AC/"/>
+    <url>/2016/10/08/iOS10%E6%96%B0%E7%9A%84schemes%E8%B7%B3%E8%BD%AC/</url>
+    
+    <content type="html"><![CDATA[<ul><li><code>电池电量</code> Prefs:root=BATTERY_USAGE</li><li><code>通用设置</code> Prefs:root=General</li><li><code>存储空间</code> Prefs:root=General&amp;path=STORAGE_ICLOUD_USAGE/DEVICE_STORAGE</li><li><code>蜂窝数据</code> Prefs:root=MOBILE_DATA_SETTINGS_ID</li><li><code>Wi-Fi 设置</code> Prefs:root=WIFI</li><li><code>蓝牙设置</code> Prefs:root=Bluetooth</li><li><code>定位设置</code> Prefs:root=Privacy&amp;path=LOCATION</li><li><code>辅助功能</code> Prefs:root=General&amp;path=ACCESSIBILITY</li><li><code>关于手机</code> Prefs:root=General&amp;path=About</li><li><code>键盘设置</code> Prefs:root=General&amp;path=Keyboard</li><li><code>显示设置</code> Prefs:root=DISPLAY</li><li><code>声音设置</code> Prefs:root=Sounds</li><li><code>App Store 设置</code> Prefs:root=STORE</li><li><code>墙纸设置</code> Prefs:root=Wallpaper</li><li><code>打开电话</code> Mobilephone://</li><li><code>世界时钟</code> Clock-worldclock://</li><li><code>闹钟</code> Clock-alarm://</li><li><code>秒表</code> Clock-stopwatch://</li><li><code>倒计时</code> Clock-timer://</li><li><code>打开相册</code> Photos://</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>schemes</tag>
+      
+      <tag>iOS10</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>iOS使用的一些函数</title>
+    <link href="/2016/08/03/iOS%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/"/>
+    <url>/2016/08/03/iOS%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0/</url>
+    
+    <content type="html"><![CDATA[<p>rand() —-随机数</p><p>abs() / labs() —-整数绝对值 </p><p>fabs() / fabsf() / fabsl() —-浮点数绝对值 </p><p>floor() / floorf() / floorl() —-向下取整 </p><p>ceil() / ceilf() / ceill() —-向上取整 </p><p>round() / roundf() / roundl() —-四舍五入 </p><p>sqrt() / sqrtf() / sqrtl() —-求平方根 </p><p>fmax() / fmaxf() / fmaxl() —-求最大值 </p><p>fmin() / fminf() / fminl() —-求最小值 </p><p>hypot() / hypotf() / hypotl() —-求直角三角形斜边的长度</p><p> fmod() / fmodf() / fmodl() —-求两数整除后的余数 </p><p>modf() / modff() / modfl() —-浮点数分解为整数和小数 </p><p>frexp() / frexpf() / frexpl() —-浮点数分解尾数和二为底的指数 </p><p>sin() / sinf() / sinl() —-求正弦值 </p><p>sinh() / sinhf() / sinhl() —-求双曲正弦值 </p><p>cos() / cosf() / cosl() —-求余弦值 </p><p>cosh() / coshf() / coshl() —-求双曲余弦值 </p><p>tan() / tanf() / tanl() —-求正切值 </p><p>tanh() / tanhf() / tanhl() —-求双曲正切值 </p><p>asin() / asinf() / asinl() —-求反正弦值 </p><p>asinh() / asinhf() / asinhl() —-求反双曲正弦值 </p><p>acos() / acosf() / acosl() —-求反余弦值</p><p> acosh() / acoshf() / acoshl() —-求反双曲余弦值 </p><p>atan() / atanf() / atanl() —-求反正切值 </p><p>atan2() / atan2f() / atan2l() —-求坐标值的反正切值 </p><p>atanh() / atanhf() / atanhl() —-求反双曲正切值</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>iOS</tag>
+      
+      <tag>函数</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Mediator Pattern(中介者模式)</title>
+    <link href="/2016/02/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BMediator-Pattern-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2016/02/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BMediator-Pattern-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>用一个中介对象(中介者)来封装一系列的对象交互，中介者使各对象不需要显示的相互引用，从而使其耦合松散，而且可以独立改变它们之间的交互。中介者模式又称为调停者模式，它是一种对象行为型模式。</p><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>协调多个对象之间的交互。</p><h2 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h2><p>" srcset="/img/loading.gif<img src="" alt="中介者模式UML模式"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mediator Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Memento Pattern(备忘录模式)</title>
+    <link href="/2016/02/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BMemento-Pattern-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2016/02/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BMemento-Pattern-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在不破坏封装的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态，这样就可以在以后将对象恢复至原先保存的状态。他是一种<code>对象行为型模式</code>。</p><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul><li>类似于撤销功能的实现，保存一个对象在某个时间的部分状态或全部状态，当以后需要它时就可以恢复至先前的状态。</li><li>对对象历史状态的封装、避免将对象的历史状态的实现细节暴露给外界。</li></ul><h2 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h2><p><img src="https://www.flyada.com/images/%E5%A4%87%E5%BF%98%E5%BD%95UML%E7%B1%BB%E5%9B%BE.png" srcset="/img/loading.gif" alt="备忘录UML类图"></p><h2 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h2><ul><li><p>备忘录模式角色之原发器类: Originator.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 备忘录模式角色之  原发器&lt;br/&gt;</span><span class="hljs-comment"> * 含有内部需要保存的状态属性</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Originator</span> </span>&#123;<span class="hljs-keyword">private</span> String state;<span class="hljs-comment">/**</span><span class="hljs-comment"> * 创建一个备忘录对象 </span><span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span><span class="hljs-comment"> */</span><span class="hljs-function"><span class="hljs-keyword">public</span> Memento <span class="hljs-title">createMemento</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Memento(<span class="hljs-keyword">this</span>);&#125;<span class="hljs-comment">/**</span><span class="hljs-comment"> * 根据备忘录对象恢复原发器先前状态  </span><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> o</span><span class="hljs-comment"> */</span><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">restoreMemento</span><span class="hljs-params">(Memento o)</span></span>&#123;<span class="hljs-keyword">this</span>.state = o.getState();&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getState</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> state;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setState</span><span class="hljs-params">(String state)</span> </span>&#123;<span class="hljs-keyword">this</span>.state = state;&#125;&#125;</code></pre></li></ul><ul><li><p>备忘录模式角色之备忘录类: Memento.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 备忘录模式角色之  备忘录&lt;br/&gt;</span><span class="hljs-comment"> * 存储原发器的内部状态</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Memento</span> </span>&#123;<span class="hljs-keyword">private</span> String state;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Memento</span><span class="hljs-params">(Originator originator)</span> </span>&#123;<span class="hljs-keyword">this</span>.state = originator.getState();&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getState</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> state;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setState</span><span class="hljs-params">(String state)</span> </span>&#123;<span class="hljs-keyword">this</span>.state = state;&#125;&#125;</code></pre></li></ul><ul><li>备忘录模式角色之 备忘录管理者或负责人类：Caretaker.java</li></ul><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 备忘录模式角色之 备忘录管理者或负责人&lt;br/&gt;</span><span class="hljs-comment"> * 只负责存储备忘录对象，而不能修改备忘录对象，也无须知道备忘录对象的实现细节&lt;br/&gt;</span><span class="hljs-comment"> * &lt;b&gt;扩展：&lt;br/&gt;</span><span class="hljs-comment"> * 如果要实现可以多步撤销的备忘录模式 则只需要在此类中使用一个数组集合来装载每一步状态的备忘录对象 如：&lt;br/&gt;</span><span class="hljs-comment"> *  // 定义一个数组集合来存储多个备忘录对象  &lt;br/&gt;</span><span class="hljs-comment">List&lt;Memento&gt; mementos = new ArrayList&lt;Memento&gt;();</span><span class="hljs-comment"> * &lt;/b&gt;</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Caretaker</span> </span>&#123;<span class="hljs-keyword">private</span> Memento memento;<span class="hljs-function"><span class="hljs-keyword">public</span> Memento <span class="hljs-title">getMemento</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> memento;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMemento</span><span class="hljs-params">(Memento memento)</span> </span>&#123;<span class="hljs-keyword">this</span>.memento = memento;&#125;&#125;</code></pre><ul><li><p>客户端测试类Client.java</p><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Client</span> </span>&#123;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;Caretaker caretaker = <span class="hljs-keyword">new</span> Caretaker();Originator originator = <span class="hljs-keyword">new</span> Originator();<span class="hljs-comment">// 初始化状态标识 "0"</span>originator.setState(<span class="hljs-string">"0"</span>);<span class="hljs-comment">// 创建状态为"0"的备忘录对象</span>Memento memento_1 = originator.createMemento();<span class="hljs-comment">// 将记录了Originator状态的备忘录 交给 Caretaker备忘录管理者储存</span>caretaker.setMemento(memento_1);showState(originator);System.out.println(<span class="hljs-string">"----- 更改原发器的状态 -----"</span>);<span class="hljs-comment">// 更改原发器的状态标识为"1"</span>originator.setState(<span class="hljs-string">"1"</span>);showState(originator);System.out.println(<span class="hljs-string">"----- 撤销至原发器的先前状态 -----"</span>);originator.restoreMemento(caretaker.getMemento());showState(originator);&#125;<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">showState</span><span class="hljs-params">(Originator originator)</span> </span>&#123;System.out.println(<span class="hljs-string">"Originator 的当前状态："</span> + originator.getState());&#125;&#125;</code></pre></li></ul><ul><li><p>运行结果</p><pre><code class="hljs java">Originator 的当前状态：<span class="hljs-number">0</span>----- 更改原发器的状态 -----Originator 的当前状态：<span class="hljs-number">1</span>----- 撤销至原发器的先前状态 -----Originator 的当前状态：<span class="hljs-number">0</span></code></pre></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Memento Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Builder Pattern(建造者模式)</title>
+    <link href="/2016/02/03/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BBuilder-Pattern-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2016/02/03/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BBuilder-Pattern-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。核心在于如何一步步构建一个包含多个组成部件的完整对象，使用相同的构建过程构建不同的产品，建造者模式是一种对象创建型模式。</p><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>复杂对象的组装和创建</p><ul><li>用于复杂对象的组装和创建、对象间通常具有较多的共同点或是组成部分相似</li><li>需要生成的对象的属性相互依赖，需要指定其生成顺序的情况</li><li>对象的创建过程独立于创建该对象的类，隔离复杂的对象的创建和使用，并使得相同的创建过程可以创建不同的产品</li></ul><h2 id="UML类图结构"><a href="#UML类图结构" class="headerlink" title="UML类图结构"></a>UML类图结构</h2><p><img src="https://www.flyada.com/images/Build%20Parttern%20UML.png" srcset="/img/loading.gif" alt="UML类图"></p><h2 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h2><ul><li>Builder(抽象建造者): 它为创建一个产品Product对象的各个部件指定抽象接口,并有方法返回产品对象</li><li>ConcreteBuilder(具体建造者): 它实现了Builder接口或抽象方法，实现各个部件的具体构造和装配方法，定义并明确它所创建的复杂对象</li><li>Product(产品角色):  它是被构建的复杂对象，通常包含多个组成部件</li><li>Director(指挥者): 它负责安排复杂对象的构造次序，指挥者与抽象构造者之间存在关联关系，可以在其construct()建造方法中调用建造者对象的部件构造与装配方法，完成复杂对象的建造</li></ul><h2 id="用例学习"><a href="#用例学习" class="headerlink" title="用例学习"></a>用例学习</h2><ul><li><p>被建造的对象: 产品类 Product.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 被建造的对象：产品</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>&#123;<span class="hljs-comment">// 产品部件A</span><span class="hljs-keyword">private</span> String partA;<span class="hljs-comment">// 产品部件B</span>    <span class="hljs-keyword">private</span> String partB;    <span class="hljs-comment">// 产品部件C</span> <span class="hljs-keyword">private</span> String partC; <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getPartA</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> partA;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPartA</span><span class="hljs-params">(String partA)</span> </span>&#123;<span class="hljs-keyword">this</span>.partA = partA;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getPartB</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> partB;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPartB</span><span class="hljs-params">(String partB)</span> </span>&#123;<span class="hljs-keyword">this</span>.partB = partB;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getPartC</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-keyword">return</span> partC;&#125;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPartC</span><span class="hljs-params">(String partC)</span> </span>&#123;<span class="hljs-keyword">this</span>.partC = partC;&#125;&#125;</code></pre></li></ul><ul><li><p>抽象建造者类[也可为接口]  Builder.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 抽象建造者</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Builder</span> </span>&#123;<span class="hljs-keyword">protected</span> Product product = <span class="hljs-keyword">new</span> Product();<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartA</span><span class="hljs-params">()</span></span>;<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartB</span><span class="hljs-params">()</span></span>;<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartC</span><span class="hljs-params">()</span></span>;<span class="hljs-function"><span class="hljs-keyword">public</span> Product <span class="hljs-title">getProduct</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> product;&#125;&#125;</code></pre></li></ul><ul><li><p>具体的复杂产品的建造者类 ConcreteBuilder.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 具体的建造者对象&lt;br&gt;</span><span class="hljs-comment"> * 建造复杂产品的各个组成部件、最后由指挥者类&lt;Director&gt;进行组装成完整的产品对象</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteBuilder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Builder</span> </span>&#123;<span class="hljs-meta">@Override</span><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartA</span><span class="hljs-params">()</span> </span>&#123;product.setPartA(<span class="hljs-string">"build Part A"</span>);System.out.println(<span class="hljs-string">"正在建造产品部件A"</span>);&#125;<span class="hljs-meta">@Override</span><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartB</span><span class="hljs-params">()</span> </span>&#123;product.setPartB(<span class="hljs-string">"build Part B"</span>);System.out.println(<span class="hljs-string">"正在建造产品部件B"</span>);&#125;<span class="hljs-meta">@Override</span><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartC</span><span class="hljs-params">()</span> </span>&#123;product.setPartC(<span class="hljs-string">"build Part C"</span>);System.out.println(<span class="hljs-string">"正在建造产品部件C"</span>);&#125;&#125;</code></pre></li></ul><ul><li><p>复杂产品的组装 指挥者类: Director.java</p><pre><code class="hljs java"><span class="hljs-comment">/**</span><span class="hljs-comment"> * 指挥者&lt;br&gt;</span><span class="hljs-comment"> * 负责 安排/组装 复杂对象的建造次序</span><span class="hljs-comment"> */</span><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Director</span> </span>&#123;<span class="hljs-keyword">private</span> Builder builder;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Director</span><span class="hljs-params">(Builder builder)</span></span>&#123;<span class="hljs-keyword">this</span>.builder = builder;&#125;<span class="hljs-comment">/**</span><span class="hljs-comment"> * 产品对象的构建与组装</span><span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span><span class="hljs-comment"> */</span><span class="hljs-function"><span class="hljs-keyword">public</span> Product <span class="hljs-title">construct</span><span class="hljs-params">()</span></span>&#123;System.out.println(<span class="hljs-string">"--- 指挥者开始 构建产品 ---"</span>);builder.buildPartA();builder.buildPartB();builder.buildPartC();System.out.println(<span class="hljs-string">"--- 指挥者 构建产品 完成 ---"</span>);<span class="hljs-keyword">return</span> builder.getProduct();&#125;&#125;</code></pre></li></ul><ul><li><p>客户端调用测试类: Client.java</p><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Client</span> </span>&#123;<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;ConcreteBuilder cBuilder = <span class="hljs-keyword">new</span> ConcreteBuilder();Director director = <span class="hljs-keyword">new</span> Director(cBuilder);director.construct();&#125;&#125;</code></pre></li></ul><p> 运行效果</p><pre><code class="hljs java">--- 指挥者开始 构建产品 ---正在建造产品部件A正在建造产品部件B正在建造产品部件C--- 指挥者 构建产品 完成 ---</code></pre><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>在建造者模式中，客户端不必知道产品对象内部组成的细节，将产品本身与产品的创建过程解耦；每一个具体的建造者都相对独立，可以方便修改/新增具体的建造者而不会对其他的建造者造成影响、使系统扩展方便，符合“开闭原则”。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Builder Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>iOS9适配之Transport Security (ATS)</title>
+    <link href="/2015/09/17/iOS9%E9%80%82%E9%85%8D%E4%B9%8BTransport-Security-ATS/"/>
+    <url>/2015/09/17/iOS9%E9%80%82%E9%85%8D%E4%B9%8BTransport-Security-ATS/</url>
+    
+    <content type="html"><![CDATA[<p>今早升级了Xcode7，重新打开了公司的项目，编译运行，发现模拟器和真机都不能联网，以为后台接口出问题，再搜索半天才发现iOS9以及Xcode7增加了App Transport Security，缩写即ATS</p><p>查询apple官网文档发现如下</p><pre><code class="hljs plain">If you’re developing a new app, you should use HTTPS exclusively. If you have an existing app, you should use HTTPS as much as you can right now, and create a plan for migrating the rest of your app as soon as possible.</code></pre><p>新的iOS9启用新的网络连接机制，推荐你使用https加密连接方式，没有使用https怎么办呢，使用如下办法就能解决</p><p>只需要在项目的Info.plist加入如下代码</p><pre><code class="hljs plain">&lt;key&gt;NSAppTransportSecurity&lt;&#x2F;key&gt; &lt;dict&gt; &lt;key&gt;NSExceptionDomains&lt;&#x2F;key&gt; &lt;dict&gt; &lt;key&gt;yourserver.com&lt;&#x2F;key&gt; &lt;dict&gt; &lt;!--Include to allow subdomains--&gt; &lt;key&gt;NSIncludesSubdomains&lt;&#x2F;key&gt; &lt;true&#x2F;&gt; &lt;!--Include to allow HTTP requests--&gt;&lt;key&gt;NSTemporaryExceptionAllowsInsecureHTTPLoads&lt;&#x2F;key&gt; &lt;true&#x2F;&gt; &lt;!--Include to specify minimum TLS version--&gt;&lt;key&gt;NSTemporaryExceptionMinimumTLSVersion&lt;&#x2F;key&gt;&lt;string&gt;TLSv1.1&lt;&#x2F;string&gt; &lt;&#x2F;dict&gt; &lt;&#x2F;dict&gt; &lt;&#x2F;dict&gt;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>iOS9</tag>
+      
+      <tag>ATS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Reveal使用教程</title>
+    <link href="/2015/08/28/Reveal%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"/>
+    <url>/2015/08/28/Reveal%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<p>打开Reveal</p><p><img src="https://www.flyada.com/images/QQ20150828-1@2x.png" srcset="/img/loading.gif" alt="找到Reveal库位置"></p><p>找到库位置</p><p><img src="https://www.flyada.com/images/QQ20150828-2@2x.png" srcset="/img/loading.gif" alt=""></p><p>复制到项目</p><p><img src="https://www.flyada.com/images/QQ20150828-3@2x.png" srcset="/img/loading.gif" alt=""></p><p>项目other linker flags添加-lz -framework Reveal</p><p><img src="https://www.flyada.com/images/QQ20150828-4@2x.png" srcset="/img/loading.gif" alt=""></p><p>再引入如下框架</p><p><img src="https://www.flyada.com/images/QQ20150828-5@2x.png" srcset="/img/loading.gif" alt=""></p><p>然后启动运行项目，便可在Reveal中观察项目UI层级</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Reveal</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>用Curl测试POST</title>
+    <link href="/2015/07/16/%E7%94%A8Curl%E6%B5%8B%E8%AF%95POST/"/>
+    <url>/2015/07/16/%E7%94%A8Curl%E6%B5%8B%E8%AF%95POST/</url>
+    
+    <content type="html"><![CDATA[<p>##POST请求  </p><p>例如如下<br><code>http://xx.xx.xx.xx:8089/mobile/login?username=zhangsan&amp;passwd=123456</code></p><ul><li>目的1：通过脚本发送post请求。</li></ul><blockquote><p>答案： </p></blockquote><blockquote><p><code>curl -d &quot;username=zhangsan&amp;passwd=123456&quot; &quot;http://xx.xx.xx.xx:8089/mobile/login&quot;</code></p></blockquote><ul><li>目的2：通过脚本发送post请求，顺便附带文本数据，比如通过”浏览”选择本地的card.txt并上传发送post请求</li></ul><blockquote><p>答案：  </p></blockquote><blockquote><p>curl  -F “blob=@card.txt;type=text/plain”  “<a href="http://xx.xx.xx.xx:8089/mobile/login?username=zhangsan&amp;passwd=123456&quot;" target="_blank" rel="noopener">http://xx.xx.xx.xx:8089/mobile/login?username=zhangsan&amp;passwd=123456&quot;</a></p></blockquote><p>其中-F 为带文件的形式发送post请求，   blob为文本框中的name元素对应的属性值。<code>&lt;type=&quot;text&quot; name=&quot;blob&quot;&gt;</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web相关</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>curl</tag>
+      
+      <tag>POST</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>极光推送ios证书设置指南</title>
+    <link href="/2015/07/08/%E6%9E%81%E5%85%89%E6%8E%A8%E9%80%81ios%E8%AF%81%E4%B9%A6%E8%AE%BE%E7%BD%AE%E6%8C%87%E5%8D%97/"/>
+    <url>/2015/07/08/%E6%9E%81%E5%85%89%E6%8E%A8%E9%80%81ios%E8%AF%81%E4%B9%A6%E8%AE%BE%E7%BD%AE%E6%8C%87%E5%8D%97/</url>
+    
+    <content type="html"><![CDATA[<p><a href="http://docs.jpush.cn/pages/viewpage.action?pageId=1343727" target="_blank" rel="noopener">极光推送指南</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>iOS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>ld: library not found for -lPods出现错误</title>
+    <link href="/2015/07/07/ld-library-not-found-for-lPods%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF/"/>
+    <url>/2015/07/07/ld-library-not-found-for-lPods%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF/</url>
+    
+    <content type="html"><![CDATA[<p>若出现<code>ld: library not found for -lPods</code> 类似的错误，</p><p>设置 <code>Project</code> -&gt; <code>Pods</code> 下所有第三方库的 <code>Build Active Architecture Only</code> 为 <code>NO</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>iOS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>推荐网站书籍</title>
+    <link href="/2015/06/30/%E6%8E%A8%E8%8D%90%E7%BD%91%E7%AB%99%E4%B9%A6%E7%B1%8D/"/>
+    <url>/2015/06/30/%E6%8E%A8%E8%8D%90%E7%BD%91%E7%AB%99%E4%B9%A6%E7%B1%8D/</url>
+    
+    <content type="html"><![CDATA[<h3 id="IT社区"><a href="#IT社区" class="headerlink" title="IT社区:"></a>IT社区:</h3><ul><li><p><a href="http://www.cnblogs.com/" target="_blank" rel="noopener">cnblogs</a> - <a href="http://www.csdn.net/" target="_blank" rel="noopener">CSDN</a>- <a href="http://www.51cto.com/" target="_blank" rel="noopener">51CTO</a>- <a href="http://www.cocoachina.com/" target="_blank" rel="noopener">cocoachina</a> - <a href="http://www.techcn.com.cn/" target="_blank" rel="noopener">techcn</a>- <a href="http://mobilehub.io/" target="_blank" rel="noopener">mobilehub</a>   推荐###iOS 学习网站:</p></li><li><p><a href="http://www.w3school.com.cn/" target="_blank" rel="noopener">W3C school</a>  - <a href="http://objccn.io/" target="_blank" rel="noopener">objccn</a>    - <a href="http://github.ibireme.com/github/list/ios/" target="_blank" rel="noopener">github上ios第三方库集合</a>  可以多看看###Swift学习</p></li><li><p><a href="https://github.com/CocoaChina-editors/Welcome-to-Swift" target="_blank" rel="noopener">Welcome-to-Swift</a>- <a href="https://github.com/numbbbbb/the-swift-programming-language-in-chinese" target="_blank" rel="noopener">the-swift-programming-language-in-chinese</a>  - <a href="http://www.infoq.com/cn" target="_blank" rel="noopener">infoq</a>    软件开发领域:此网站里面有很多文章都是翻译国外的    里面有一些架构设计的文章很不错- <a href="http://www.cnblogs.com/wendingding/" target="_blank" rel="noopener">传智学员记录了学习ios</a> ###安全:</p></li><li><p><a href="http://blog.csdn.net/yiyaaixuexi" target="_blank" rel="noopener">http://blog.csdn.net/yiyaaixuexi</a>   好像是一位妹子好牛逼 - <a href="http://nianxi.net/" target="_blank" rel="noopener">http://nianxi.net/</a>    她的新博客不过现在内容比较少- <a href="http://bbs.pediy.com/" target="_blank" rel="noopener">开雪学院</a>   国内重量级###数据结构与算法</p><p><a href="http://blog.csdn.net/v_july_v" target="_blank" rel="noopener">http://blog.csdn.net/v_july_v</a>  <a href="http://blog.csdn.net/itcastcpp?viewmode=contents" target="_blank" rel="noopener">http://blog.csdn.net/itcastcpp?viewmode=contents</a>    传智 C++学院院长 尹成 ###blog:- <a href="http://blog.devtang.com/" target="_blank" rel="noopener">http://blog.devtang.com/</a>   唐巧  曾开发网易微博后台\ iOS:曾开发过 有道云笔记\粉笔网\猿题库- <a href="http://onevcat.com/" target="_blank" rel="noopener">http://onevcat.com/</a>     王巍    就职Line  技术领域: ios+Unity3d- <a href="http://beyondvincent.com/blog/archives/" target="_blank" rel="noopener">http://beyondvincent.com/blog/archives/</a>   - <a href="http://esoftmobile.com/" target="_blank" rel="noopener">http://esoftmobile.com/</a>   - <a href="http://blog.csdn.net/tonny_guan?viewmode=contents" target="_blank" rel="noopener">http://blog.csdn.net/tonny_guan?viewmode=contents</a> - <a href="http://blog.csdn.net/opengl_es" target="_blank" rel="noopener">http://blog.csdn.net/opengl_es</a> ###游戏开发:- <a href="http://blog.codingnow.com/" target="_blank" rel="noopener">http://blog.codingnow.com/</a>   吴云洋( 云风)  很牛逼  网易研究中心总监  - <a href="http://www.gameres.com/" target="_blank" rel="noopener">http://www.gameres.com/</a>   非常不错的一个 游戏资讯门户  <a href="http://game.ceeger.com/forum/" target="_blank" rel="noopener">http://game.ceeger.com/forum/</a>   Unity3D 学习论坛###开源网站:- <a href="https://github.com/" target="_blank" rel="noopener">https://github.com/</a>  - <a href="http://code4app.com/" target="_blank" rel="noopener">http://code4app.com/</a>  - <a href="http://code.cocoachina.com/" target="_blank" rel="noopener">http://code.cocoachina.com/</a> </p><p>推荐书籍:</p></li><li><p>现代操作系统</p></li><li><p>iOS与OS X多线程和内存管理 - Effective Objective-C 2.0：编写高质量iOS与OS X代码的52个有效方法 - Objective-C编程之道：iOS设计模式解析- iOS应用逆向工程：分析与实战 - 重构：改善既有代码的设计- 鸟哥的Linux私房菜</p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>iOS</tag>
+      
+      <tag>图书</tag>
+      
+      <tag>网站</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何解决Android 5.0中出现的警告：Service Intent must be explicit</title>
+    <link href="/2015/06/27/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3Android-5-0%E4%B8%AD%E5%87%BA%E7%8E%B0%E7%9A%84%E8%AD%A6%E5%91%8A%EF%BC%9AService-Intent-must-be-explicit/"/>
+    <url>/2015/06/27/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3Android-5-0%E4%B8%AD%E5%87%BA%E7%8E%B0%E7%9A%84%E8%AD%A6%E5%91%8A%EF%BC%9AService-Intent-must-be-explicit/</url>
+    
+    <content type="html"><![CDATA[<p>有些时候我们使用Service的时需要采用隐私启动的方式，但是Android 5.0一出来后，其中有个特性就是<code>Service Intent  must be explitict</code>，也就是说从<code>Lollipop</code>开始，<code>service</code>服务必须采用显示方式启动。<br>而android源码是这样写的</p><blockquote><p>源码位置：sdk/sources/android-21/android/app/ContextImpl.java</p></blockquote><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">validateServiceIntent</span><span class="hljs-params">(Intent service)</span> </span>&#123;        <span class="hljs-keyword">if</span> (service.getComponent() == <span class="hljs-keyword">null</span> &amp;&amp; service.getPackage() == <span class="hljs-keyword">null</span>) &#123;            <span class="hljs-keyword">if</span> (getApplicationInfo().targetSdkVersion &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;                IllegalArgumentException ex = <span class="hljs-keyword">new</span> IllegalArgumentException(                        <span class="hljs-string">"Service Intent must be explicit: "</span> + service);                <span class="hljs-keyword">throw</span> ex;            &#125; <span class="hljs-keyword">else</span> &#123;                Log.w(TAG, <span class="hljs-string">"Implicit intents with startService are not safe: "</span> + service                        + <span class="hljs-string">" "</span> + Debug.getCallers(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>));            &#125;        &#125;    &#125;</code></pre><p>既然，源码里是这样写的，那么这里有两种解决方法：</p><ul><li>设置Action和packageName：</li></ul><blockquote><p>谷歌推荐方法</p></blockquote><pre><code class="hljs java">Intent mIntent = <span class="hljs-keyword">new</span> Intent();mIntent.setAction(<span class="hljs-string">"XXX.XXX.XXX"</span>);<span class="hljs-comment">//你定义的service的action</span>mIntent.setPackage(getPackageName());<span class="hljs-comment">//这里你需要设置你应用的包名</span>context.startService(mIntent);</code></pre><ul><li>将隐式启动转换为显示启动：</li></ul><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Intent <span class="hljs-title">getExplicitIntent</span><span class="hljs-params">(Context context, Intent implicitIntent)</span> </span>&#123;        <span class="hljs-comment">// Retrieve all services that can match the given intent</span>        PackageManager pm = context.getPackageManager();        List&lt;ResolveInfo&gt; resolveInfo = pm.queryIntentServices(implicitIntent, <span class="hljs-number">0</span>);        <span class="hljs-comment">// Make sure only one match was found</span>        <span class="hljs-keyword">if</span> (resolveInfo == <span class="hljs-keyword">null</span> || resolveInfo.size() != <span class="hljs-number">1</span>) &#123;            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;        &#125;        <span class="hljs-comment">// Get component info and create ComponentName</span>        ResolveInfo serviceInfo = resolveInfo.get(<span class="hljs-number">0</span>);        String packageName = serviceInfo.serviceInfo.packageName;        String className = serviceInfo.serviceInfo.name;        ComponentName component = <span class="hljs-keyword">new</span> ComponentName(packageName, className);        <span class="hljs-comment">// Create a new intent. Use the old one for extras and such reuse</span>        Intent explicitIntent = <span class="hljs-keyword">new</span> Intent(implicitIntent);        <span class="hljs-comment">// Set the component to be explicit</span>        explicitIntent.setComponent(component);        <span class="hljs-keyword">return</span> explicitIntent;    &#125;</code></pre><p>调用方式如下：</p><pre><code class="hljs java">Intent mIntent = <span class="hljs-keyword">new</span> Intent();mIntent.setAction(<span class="hljs-string">"XXX.XXX.XXX"</span>);Intent eintent = <span class="hljs-keyword">new</span> Intent(getExplicitIntent(mContext,mIntent));context.startService(eintent);</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>android5.0</tag>
+      
+      <tag>service</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>网页加载历程</title>
+    <link href="/2015/05/14/%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E5%8E%86%E7%A8%8B/"/>
+    <url>/2015/05/14/%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E5%8E%86%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<p>##网页加载过程详解</p><p>###网页加载的详细步骤拆分：</p><ul><li>用户打开url链接</li><li>浏览器查询url的dns地址</li><li>提交url请求到服务器端</li><li>服务器端处理</li><li>传输处理好的html文本内容到浏览器</li><li>浏览器解析html，并加载css，js，图片等内容</li><li>加载完成，用户看到完整的页面内容</li></ul><p>其中第六步的浏览器解析过程将是前端优化最直接、有效的地方，该过程的详细过程为：接受网络数据-》将二进制码变成字符-》将字符变为unicode code points.-》tokenizer -》tree constructor -》DOM ready -》Window ready。前端编程，主要理解的是tree constructor -&gt; dom ready -&gt; window ready的流程。　　</p><p>###浏览器加载和渲染html的顺序</p><ul><li>IE下载的顺序是从上到下，渲染的顺序也是从上到下，下载和渲染是同时进行的。</li><li>在渲染到页面的某一部分时，其上面的所有部分都已经下载完成（并不是说所有相关联的元素都已经下载完）。</li><li>如果遇到语义解释性的标签嵌入文件（JS脚本，CSS样式），那么此时IE的下载过程会启用单独连接进行下载。</li><li>样式表在下载完成后，将和以前下载的所有样式表一起进行解析，解析完成后，将对此前所有元素（含以前已经渲染的）重新进行渲染。</li><li>JS、CSS中如有重定义，后定义函数将覆盖前定义函数。　　</li></ul><p>JS的加载（js是单线下载和执行的）</p><ul><li>不能并行下载和解析（阻塞下载）。</li><li>当引用了JS的时候，浏览器发送1个js request就会一直等待该request的返回。因为浏览器需要1个稳定的DOM树结构，而JS中很有可能有代码直接改变了DOM树结构，比如使用 document.write 或 appendChild,甚至是直接使用的location.href进行跳转，浏览器为了防止出现JS修改DOM树，需要重新构建DOM树的情况，所以 就会阻塞其他的下载和呈现.</li></ul><p>###如何加快HTML页面加载速度</p><p>页面减肥：</p><ul><li>页面的肥瘦是影响加载速度最重要的因素。</li><li>删除不必要的空格、注释。</li><li>将inline的script和css移到外部文件。</li><li>可以使用HTML Tidy来给HTML减肥，还可以使用一些压缩工具来给JavaScript减肥。</li></ul><p>减少文件数量：</p><ul><li>减少页面上引用的文件数量可以减少HTTP连接数。</li><li>许多JavaScript、CSS文件可以合并最好合并，人家财帮子都把自己的JavaScript. functions和Prototype.js合并到一个base.js文件里去了。</li></ul><p>减少域名查询：</p><ul><li>DNS查询和解析域名也是消耗时间的，所以要减少对外部JavaScript、CSS、图片等资源的引用，不同域名的使用越少越好。</li></ul><p>缓存重用数据：</p><ul><li>对重复使用的数据进行缓存。</li></ul><p>优化页面元素加载顺序：</p><ul><li><p>首先加载页面最初显示的内容和与之相关的JavaScript和CSS，然后加载HTML相关的东西，像什么不是最初显示相关的图片、flash、视频等很肥的资源就最后加载。<br>　　<br>减少inline JavaScript的数量：</p></li><li><p>浏览器parser会假设inline JavaScript会改变页面结构，所以使用inline JavaScript开销较大。</p></li><li><p>不要使用document.write()这种输出内容的方法，使用现代W3C DOM方法来为现代浏览器处理页面内容。</p></li></ul><p>使用现代CSS和合法的标签：</p><ul><li>使用现代CSS来减少标签和图像，例如使用现代CSS+文字完全可以替代一些只有文字的图片。</li><li>使用合法的标签避免浏览器解析HTML时做“error correction”等操作，还可以被HTML Tidy来给HTML减肥。</li></ul><p>Chunk your content：</p><ul><li>不要使用嵌套table，而使用非嵌套table或者div。将基于大块嵌套的table的layout分解成多个小table，这样就不需要等到整个页面（或大table）内容全部加载完才显示。</li></ul><p>指定图像和table的大小：</p><ul><li>如果浏览器可以立即决定图像或table的大小，那么它就可以马上显示页面而不要重新做一些布局安排的工作。</li><li>这不仅加快了页面的显示，也预防了页面完成加载后布局的一些不当的改变。　　　　</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web相关</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>css</tag>
+      
+      <tag>js</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Android抽象布局——include、merge 、ViewStub</title>
+    <link href="/2015/05/04/Android%E6%8A%BD%E8%B1%A1%E5%B8%83%E5%B1%80%E2%80%94%E2%80%94include%E3%80%81merge-%E3%80%81ViewStub/"/>
+    <url>/2015/05/04/Android%E6%8A%BD%E8%B1%A1%E5%B8%83%E5%B1%80%E2%80%94%E2%80%94include%E3%80%81merge-%E3%80%81ViewStub/</url>
+    
+    <content type="html"><![CDATA[<p>在布局优化中，Androi的官方提到了这三种布局<include />、<merge />、<ViewStub />，并介绍了这三种布局各有的优势，下面也是简单说一下他们的优势，以及怎么使用:</p><p>##布局重用<code>&lt;include /&gt;</code></p><p><code>&lt;include /&gt;</code>标签能够重用布局文件，简单的使用如下：</p><pre><code class="hljs plain">&lt;LinearLayoutxmlns:android&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;    android:orientation&quot;vertical&quot;    android:layout_width&#x3D;”match_parent”      android:layout_height&#x3D;”match_parent”      android:background&quot;@color&#x2F;app_bg&quot;    android:gravity&quot;center_horizontal&quot;    includelayout&quot;@layout&#x2F;titlebar&quot;&#x2F;&gt;    TextViewandroid:layout_width&#x3D;”match_parent”                android:layout_height&quot;wrap_content&quot;              android:text&quot;@string&#x2F;hello&quot;              android:padding&quot;10dp&quot;&#x2F;&gt;&lt;&#x2F;LinearLayout&lt;LinearLayout xmlns:android&#x3D;&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;    android:orientation&#x3D;&quot;vertical&quot;     android:layout_width&#x3D;”match_parent”    android:layout_height&#x3D;”match_parent”    android:background&#x3D;&quot;@color&#x2F;app_bg&quot;    android:gravity&#x3D;&quot;center_horizontal&quot;&gt;    &lt;include layout&#x3D;&quot;@layout&#x2F;titlebar&quot;&#x2F;&gt;    &lt;TextView android:layout_width&#x3D;”match_parent”              android:layout_height&#x3D;&quot;wrap_content&quot;              android:text&#x3D;&quot;@string&#x2F;hello&quot;              android:padding&#x3D;&quot;10dp&quot; &#x2F;&gt;    ...&lt;&#x2F;LinearLayout&gt;</code></pre><p>1)<include />标签可以使用单独的layout属性，这个也是必须使用的。</p><p>2)可以使用其他属性。<include />标签若指定了属性，而你的layoutlayout会被覆盖，解决方案。</p><p>3)include标签中所有的android:layout_*都是有效的，前提是必须要写layout_widthlayout_height</p><p>4)布局中可以包含两个相同的include标签，引用时可以使用如下方法解决（参考）:</p><pre><code class="hljs plain">bookmarks_container_2findViewById(R.id.bookmarks_favourite);   bookmarks_container_2.findViewById(R.id.bookmarks_list);  View bookmarks_container_2 &#x3D; findViewById(R.id.bookmarks_favourite); bookmarks_container_2.findViewById(R.id.bookmarks_list);</code></pre><p>##减少视图层级<code>&lt;merge /&gt;</code></p><p><code>&lt;merge/&gt;</code>标签在UI的结构优化中起着非常重要的作用，它可以删减多余的层级，优化UI。<code>&lt;merge/&gt;</code>多用于替换FrameLayout或者当一个布局包含另一个时，<code>&lt;merge/&gt;</code>标签消除视图层次结构中多余的视图组。例如你的主布局文件是垂直布局，引入了一个垂直布局的include，这是如果include布局使用的LinearLayout就没意义了，使用的话反而减慢你的UI表现。这时可以使用<code>&lt;merge/&gt;</code>标签优化。</p><pre><code class="hljs plain">&lt;merge xmlns:android&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;    Button        android:layout_width&quot;fill_parent&quot;        android:layout_height&quot;wrap_content&quot;        android:text&quot;@string&#x2F;add&quot;&#x2F;&gt;    Button        android:layout_width&quot;fill_parent&quot;        android:layout_height&quot;wrap_content&quot;        android:text&quot;@string&#x2F;delete&quot;&#x2F;&gt;&lt;&#x2F;merge&lt;merge xmlns:android&#x3D;&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;&gt;    &lt;Button        android:layout_width&#x3D;&quot;fill_parent&quot;         android:layout_height&#x3D;&quot;wrap_content&quot;        android:text&#x3D;&quot;@string&#x2F;add&quot;&#x2F;&gt;    &lt;Button        android:layout_width&#x3D;&quot;fill_parent&quot;         android:layout_height&#x3D;&quot;wrap_content&quot;        android:text&#x3D;&quot;@string&#x2F;delete&quot;&#x2F;&gt;&lt;&#x2F;merge&gt;</code></pre><p>现在，当你添加该布局文件时(使用<code>&lt;include /&gt;</code>标签)，系统忽略<code>&lt;merge /&gt;</code>节点并且直接添加两个Button。更多详细请参考 <a href="http://android-developers.blogspot.com/2009/03/android-layout-tricks-3-optimize-by.html" target="_blank" rel="noopener">官方文档</a></p><p>##需要时使用<code>&lt;ViewStub /&gt;</code></p><p><code>&lt;ViewStub /&gt;</code>标签最大的优点是当你需要时才会加载，使用他并不会影响UI初始化时的性能。各种不常用的布局想进度条、显示错误消息等可以使用<code>&lt;ViewStub /&gt;</code>标签，以减少内存使用量，加快渲染速度。<code>&lt;ViewStub /&gt;</code>是一个不可见的，大小为View。<code>&lt;ViewStub /&gt;</code>标签使用如下：</p><pre><code class="hljs plain">&lt;ViewStub    android:id&quot;@+id&#x2F;stub_import&quot;    android:inflatedId&quot;@+id&#x2F;panel_import&quot;    android:layout&quot;@layout&#x2F;progress_overlay&quot;    android:layout_width&quot;fill_parent&quot;    android:layout_height&quot;wrap_content&quot;    android:layout_gravity&quot;bottom&quot;&#x2F;&gt;&lt;ViewStub    android:id&#x3D;&quot;@+id&#x2F;stub_import&quot;    android:inflatedId&#x3D;&quot;@+id&#x2F;panel_import&quot;    android:layout&#x3D;&quot;@layout&#x2F;progress_overlay&quot;    android:layout_width&#x3D;&quot;fill_parent&quot;    android:layout_height&#x3D;&quot;wrap_content&quot;    android:layout_gravity&#x3D;&quot;bottom&quot; &#x2F;&gt;</code></pre><p>当你想加载布局时，可以使用下面其中一种方法：</p><pre><code class="hljs plain">((ViewStub) findViewById(R.id.stub_import)).setVisibility(View.VISIBLE);  View importPanel &#x3D; ((ViewStub) findViewById(R.id.stub_import)).inflate();  ((ViewStub) findViewById(R.id.stub_import)).setVisibility(View.VISIBLE);&#x2F;&#x2F; orView importPanel &#x3D; ((ViewStub) findViewById(R.id.stub_import)).inflate();</code></pre><p>inflate()函数的时候，ViewStub被引用的资源替代，并且返回引用的这样程序可以直接得到引用的而不用再次调用函数findViewById()来查找了。<br>ViewStub目前有个缺陷就是还不支持 <code>&lt;merge /&gt;</code><br>更多介绍详细<a href="http://android-developers.blogspot.com/2009/03/android-layout-tricks-3-optimize-with.html" target="_blank" rel="noopener">官方介绍</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>抽象布局</tag>
+      
+      <tag>inlude</tag>
+      
+      <tag>merge</tag>
+      
+      <tag>ViewStub</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Proxy Pattern(代理模式)</title>
+    <link href="/2015/04/30/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BProxy-Pattern-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2015/04/30/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BProxy-Pattern-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<p>##简介<br>给某一个对象提供一个代理，并由代理对象来完成对原对象的访问。代理模式是一种对象结构型模式。</p><p>##适用场景<br>当无法直接访问某个对象或访问某个对象存在困难时可以通过一个代理对象来间接访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口。</p><p>##UML类图<br><img src="https://www.flyada.com/images/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F20150110155017568.png" srcset="/img/loading.gif" alt="代理模式"></p><p>##参与对象</p><ul><li>接口类：Subject</li></ul><p>它声明了真实访问者和代理访问者的共同接口,客户端通常需要针对接口角色进行编程。</p><ul><li>代理类：ProxySubject</li></ul><p>包含了对真实（委托）对象(RealSubject)的引用，在实现的接口方法中调用引用对象的接口方法执行，从而达到代理的作用。看似是代理对象(ProxySubject)在操作，但其实真正的操作者是委托对象（RealSubject）。</p><ul><li>委托类/真实访问类：RealSubject</li></ul><p>它定义了代理角色所代表的真实对象，在真实角色中实现了真实的业务操作，客户端可以通过代理角色间接调用真实角色中定义的操作。</p><p>##实现demo</p><ul><li>接口类：<code>Subject.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 接口类 * @author rechael * *&#x2F;public interface Subject &#123;public void visit();&#125;</code></pre><ul><li>接口实现类，真实访问对象/委托对象：<code>RealSubject.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 接口实现类，真实访问对象&#x2F;委托对象 * @author rechael * *&#x2F;public class RealSubject implements Subject &#123;@Overridepublic void visit() &#123;System.out.println(&quot;I am &#39;RealSubject&#39;,I am the execution method&quot;);&#125;&#125;</code></pre><ul><li>接口实现类，代理对象：<code>ProxySubject.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 接口实现类，代理对象 * @author rechael * *&#x2F;public class ProxySubject implements Subject &#123;&#x2F;&#x2F; 维持对真实委托对象的引用，该对象才是真正的执行者private Subject realSubject;public ProxySubject(Subject subject)&#123;this.realSubject &#x3D; subject;&#125;@Overridepublic void visit() &#123;&#x2F;&#x2F; 真实委托对象 通过 代理对象的引用 间接的实现了对目标对象的访问执行realSubject.visit();&#125;&#125;</code></pre><ul><li>客户类 <code>Client.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 客户类 * @author  rechael * *&#x2F;public class Client &#123;public static void main(String[] args) &#123;Subject proxySubject &#x3D; new ProxySubject(new RealSubject());proxySubject.visit();&#125;&#125;</code></pre><p>##其他/扩展</p><p>按照代理类的创建时期，代理类可以分为两种:</p><ul><li>静态代理：</li></ul><p>由程序员创建或特定工具自动生成源代码，再对其编译。在程序运行前，代理类的.class文件就已经存在了。（上面用例介绍的就是 静态代理技术）</p><p>静态代理的优劣分析：</p><p>优点：客户端面向接口编程，符合开闭原则，使系统具有好的灵活性和扩展性。</p><p>缺点：从上面代码中我们可以发现 每一种代理类都是实现了特定的接口，及每一种代理类只能为特定接口下的实现类做代理。如果是不同接口下的其他实现类，则需要重新定义新接口下的代理类。<br>那么是否可以通过一个代理类完成不同接口下实现类的代理操作呢？那么此时就必须使用动态代理来完成。</p><ul><li>动态代理：</li></ul><p>在程序运行时，运用JAVA反射机制动态创建代理实例。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Proxy Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Bridge Pattern(桥接模式)</title>
+    <link href="/2015/04/30/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BBridge-Pattern-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2015/04/30/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BBridge-Pattern-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>将抽象部分与它的实现部分分离，使它们都可以独立地变化。它是一种对象结构型模式，又称为柄体(Handle and Body)模式。</p><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>具体体现在处理多维度变化</p><p>适用业务场景：某功能为将数据库中的数据转换成多种文件格式，例如txt、xml、pdf等格式，同时需要支持不同类型的数据库的读取。便可使用桥接模式对其进行设计。</p><p>这里的维度有俩个，分别为：不同的文件格式和不同的数据库类型。</p><p>如下：</p><p><img src="https://www.flyada.com/images/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F20150306165224643" srcset="/img/loading.gif" alt="不同维度"></p><h2 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h2><p> 桥接模式通用结构图</p><p> <img src="http://bullettrain1433.qiniudn.com/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F20150306165511049" srcset="/img/loading.gif" alt="通用用例图"></p><p> 针对业务设计的结构图</p><p> <img src="http://bullettrain1433.qiniudn.com/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F20150306165429741" srcset="/img/loading.gif" alt="特定业务用例图"></p><h2 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h2><ul><li>Abstraction（抽象类）：用于定义抽象类的接口，它一般是抽象类而不是接口，其中定义了一个Implementor（实现类接口）类型的对象并可以维护该对象，它与Implementor之间具有关联关系，它既可以包含抽象业务方法，也可以包含具体业务方法。</li><li>RefinedAbstraction（扩充抽象类）：扩充由Abstraction定义的接口，通常情况下它不再是抽象类而是具体类，它实现了在Abstraction中声明的抽象业务方法，在RefinedAbstraction中可以调用在Implementor中定义的业务方法。</li><li>Implementor（实现类接口）：定义实现类的接口，这个接口不一定要与Abstraction的接口完全一致，事实上这两个接口可以完全不同，一般而言，Implementor接口仅提供基本操作，而Abstraction定义的接口可能会做更多更复杂的操作。Implementor接口对这些基本操作进行了声明，而具体实现交给其子类。通过关联关系，在Abstraction中不仅拥有自己的方法，还可以调用到Implementor中定义的方法，使用关联关系来替代继承关系。</li><li>ConcreteImplementor（具体实现类）：具体实现Implementor接口，在不同的ConcreteImplementor中提供基本操作的不同实现，在程序运行时，ConcreteImplementor对象将替换其父类对象，提供给抽象类具体的业务操作方法。</li></ul><h2 id="用例学习-以适用场景里的业务场景作为代码设计"><a href="#用例学习-以适用场景里的业务场景作为代码设计" class="headerlink" title="用例学习(以适用场景里的业务场景作为代码设计)"></a>用例学习(以适用场景里的业务场景作为代码设计)</h2><ul><li>JDBC 驱动连接管理类：<code>JdbcDriverManager.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * JDBC 驱动连接管理类 * @author rechael * *&#x2F;public class JdbcDriverManager &#123;    public String connectAndReadOracle()&#123;        &#x2F;&#x2F; 模拟连接Oracle数据库的代码        System.out.println(&quot;已成功连接到Oracle数据库&quot;);        &#x2F;&#x2F; 模式 省略 从数据库中获取内容的代码        String content &#x3D; &quot;已成功从Oracle数据库中读取到了内容&quot;;        return content;    &#125;    public String connectAndReadMySql()&#123;        &#x2F;&#x2F; 模拟连接MySql数据库的代码        System.out.println(&quot;已成功连接到MySql数据库&quot;);        &#x2F;&#x2F; 模式 省略 从数据库中获取内容的代码        String content &#x3D; &quot;已成功从MySql数据库中读取到了内容&quot;;        return content;    &#125;    public String connectAndReadSqlServer()&#123;        &#x2F;&#x2F; 模拟连接Sql Server数据库的代码        System.out.println(&quot;已成功连接到Sql Server数据库&quot;);        &#x2F;&#x2F; 模式 省略 从数据库中获取内容的代码        String content &#x3D; &quot;已成功从Sql Server数据库中读取到了内容&quot;;        return content;    &#125;&#125;</code></pre><ul><li>&lt;角色：实现类接口&gt; <code>FileExportImpl.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 获取文件内容、连接数据库来源接口 * @author rechael * *&#x2F;public interface FileExportImpl &#123;    &#x2F;**     * 读取数据库中的内容     * @param jdbcDriver     * @return     *&#x2F;    public String readContent();&#125;</code></pre><ul><li>&lt;角色：具体实现类&gt; <code>FileExportFromOracle.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 从Oracle数据库获取内容 * @author rechael * *&#x2F;public class FileExportFromOracle implements FileExportImpl &#123;    @Override    public String readContent() &#123;        JdbcDriverManager jdbcDriver &#x3D; new JdbcDriverManager();        return jdbcDriver.connectAndReadOracle();    &#125;&#125;</code></pre><ul><li>&lt;角色：具体实现类&gt; <code>FileExportFromMySql.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 从MySql数据库获取内容 * @author rechael * *&#x2F;public class FileExportFromMySql implements FileExportImpl &#123;    @Override    public String readContent() &#123;        JdbcDriverManager jdbcDriver &#x3D; new JdbcDriverManager();        return jdbcDriver.connectAndReadMySql();    &#125;&#125;</code></pre><ul><li>&lt;角色：具体实现类&gt; <code>FileExportFromSqlServer.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 从Sql Server数据库获取内容 * @author rechael * *&#x2F;public class FileExportFromSqlServer implements FileExportImpl &#123;    @Override    public String readContent() &#123;        JdbcDriverManager jdbcDriver &#x3D; new JdbcDriverManager();        return jdbcDriver.connectAndReadSqlServer();    &#125;&#125;</code></pre><ul><li>&lt;角色：抽象类&gt; <code>FileExportAbstraction.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 文件格式导出 抽象类 * @author rechael * *&#x2F;public abstract class FileExportAbstraction &#123;    protected FileExportImpl fileSouce;    public void setFileSource(FileExportImpl fileSouce)&#123;        this.fileSouce &#x3D; fileSouce;    &#125;    public abstract void exportFile();&#125;</code></pre><ul><li>&lt;角色：扩充抽象类&gt; <code>TxtFileExport.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * Txt文件格式导出具体类 * @author rechael * *&#x2F;public class TxtFileExport extends FileExportAbstraction &#123;    @Override    public void exportFile() &#123;        String readContent &#x3D; fileSouce.readContent();        System.out.println(readContent + &quot;，将内容导出为.txt格式&quot;);    &#125;&#125;</code></pre><ul><li>&lt;角色：扩充抽象类&gt; <code>XmlFileExport.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * xml文件格式导出具体类 * @author  rechael * *&#x2F;public class XmlFileExport extends FileExportAbstraction &#123;    @Override    public void exportFile() &#123;        String readContent &#x3D; fileSouce.readContent();        System.out.println(readContent + &quot;，将内容导出为.xml格式&quot;);    &#125;&#125;</code></pre><ul><li>&lt;角色：扩充抽象类&gt; <code>PdfFileExport.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * pdf文件格式导出具体类 * @author  rechael * *&#x2F;public class PdfFileExport extends FileExportAbstraction &#123;    @Override    public void exportFile() &#123;        String readContent &#x3D; fileSouce.readContent();        System.out.println(readContent + &quot;，将内容导出为.pdf格式&quot;);    &#125;&#125;</code></pre><ul><li>客户端测试类: <code>Client.java</code></li></ul><pre><code class="hljs plain">public class Client &#123;    public static void main(String[] args) &#123;        FileExportImpl fileOracle &#x3D; new FileExportFromOracle();        FileExportImpl fileMySql &#x3D; new FileExportFromMySql();        FileExportImpl fileSqlServer &#x3D; new FileExportFromSqlServer();        FileExportAbstraction fileTxtExport &#x3D; new TxtFileExport();        FileExportAbstraction fileXmlExport &#x3D; new XmlFileExport();        FileExportAbstraction filePdfExport &#x3D; new PdfFileExport();        &#x2F;&#x2F; 如果我们要从Oracle中导出xml格式的数据        fileXmlExport.setFileSource(fileOracle);        fileXmlExport.exportFile();        System.out.println(&quot;--------------------\n&quot;);        &#x2F;&#x2F; 如果我们要从MySql中导出txt格式的数据        fileTxtExport.setFileSource(fileMySql);        fileTxtExport.exportFile();        System.out.println(&quot;--------------------\n&quot;);        &#x2F;&#x2F; 如果我们要从SqlServer中导出pdf格式的数据        filePdfExport.setFileSource(fileSqlServer);        filePdfExport.exportFile();    &#125;&#125;</code></pre><ul><li>执行结果 如下：</li></ul><pre><code class="hljs plain">已成功连接到Oracle数据库已成功从Oracle数据库中读取到了内容，将内容导出为.xml格式--------------------已成功连接到MySql数据库已成功从MySql数据库中读取到了内容，将内容导出为.txt格式--------------------已成功连接到SqlServer数据库已成功从SqlServer数据库中读取到了内容，将内容导出为.pdf格式</code></pre><ul><li>后续系统扩展</li></ul><p>现如果需求要求新增加一种文件输入格式 如:html格式</p><p>则只需新写一个FileExportAbstraction抽象类的子类 用以输出html格式即可，而不需要修改其他任何类、不需要修改另一维度的代码。</p><p>现如果需求要求新增加一类型数据库类型 如：Sybase</p><p>则只需新写一个FileExportImpl接口的实现类、用以从Sybase数据库中获取内容、并修改JdbcDriverManager.java类、添加对Sybase数据库的连接和访问。</p><p>由此可见 在两个变化维度中任意扩展一个维度，都不需要修改原有系统、提高了系统的扩展性和可维护性。</p><ul><li>其他</li></ul><p>主要优点：</p><p>(1)分离抽象接口及其实现部分。桥接模式使用“对象间的关联关系”解耦了抽象和实现之间固有的绑定关系，使得抽象和实现可以沿着各自的维度来变化。所谓抽象和实现沿着各自维度的变化，也就是说抽象和实现不再在同一个继承层次结构中，而是“子类化”它们，使它们各自都具有自己的子类，以便任何组合子类，从而获得多维度组合对象。</p><p>(2)在很多情况下，桥接模式可以取代多层继承方案，多层继承方案违背了“单一职责原则”，复用性较差，且类的个数非常多，桥接模式是比多层继承方案更好的解决方法，它极大减少了子类的个数。</p><p>(3)桥接模式提高了系统的可扩展性，在两个变化维度中任意扩展一个维度，都不需要修改原有系统，符合“开闭原则”</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Bridge Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>设计模式之Decorator Pattern(装饰模式)</title>
+    <link href="/2015/04/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BDecorator-Pattern-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
+    <url>/2015/04/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BDecorator-Pattern-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<p>##简介<br>动态地给一个对象增加一些额外的职责，就增加对象功能来说，装饰模式比生成子类实现更为灵活。装饰模式是一种对象结构型模式。装饰模式是一种用于替代继承的技术,使用对象之间的关联关系取代类之间的继承关系。在装饰模式中引入了装饰类，在装饰类中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p><p>##适用场景<br>装饰原有对象、在不改变原有对象的情况下扩展增强新功能/新特征.。当不能采用继承的方式对系统进行扩展或者采用继承不利于系统扩展和维护时可以使用装饰模式。</p><p>##UML类图<br><img src="https://www.flyada.com/images/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F20150309205502396" srcset="/img/loading.gif" alt="装饰模式"></p><p>##参与者</p><ul><li><p>Component（抽象构件）：它是具体构件和抽象装饰类的共同父类，声明了在具体构件中实现的业务方法。</p></li><li><p>ConcreteComponent（具体构件）：它是抽象构件类的子类，用于定义具体的构件对象（被装饰者），实现了在抽象构件中声明的方法，装饰器可以给它增加额外的职责（方法）。</p></li><li><p>Decorator（抽象装饰类）：它也是抽象构件类的子类，用于给具体构件增加职责，但是具体职责在其子类中实现。它维护一个指向抽象构件对象的引用，通过该引用可以调用装饰之前构件对象的方法，并通过其子类扩展该方法，以达到装饰的目的。</p></li><li><p>ConcreteDecorator（具体装饰类）：它是抽象装饰类的子类，负责向构件添加新的职责。每一个具体装饰类都定义了一些新的行为，它可以调用在抽象装饰类中定义的方法，并可以增加新的方法用以扩充对象的行为。</p></li></ul><p>##代码demo</p><ul><li>角色：抽象构件 <code>Component.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 设计模式之 装饰模式&lt;br&#x2F;&gt; * 角色：抽象构件&lt;br&#x2F;&gt; * 被装饰的对象抽象类&lt;br&#x2F;&gt; * @author rechael * *&#x2F;public abstract class Component &#123;    public abstract void operation();&#125;</code></pre><ul><li>角色：具体构件类 <code>ConcreteComponent.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 设计模式之 装饰模式&lt;br&#x2F;&gt; * 角色：具体构件类&lt;br&#x2F;&gt; * 抽象构件类的子类，定义具体的构件对象，也就是具体的被装饰对象&lt;br&#x2F;&gt; * @author  rechael * *&#x2F;public class ConcreteComponent extends Component &#123;    @Override    public void operation() &#123;        System.out.println(&quot;我是具体的构件类(被装饰对象)，这是我的原有方法&quot;);    &#125;&#125;</code></pre><ul><li>角色：抽象装饰类 <code>Decorator.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 设计模式之 装饰模式&lt;br&#x2F;&gt; * 角色：抽象装饰类&lt;br&#x2F;&gt; * 也是抽象构件类的子类，目的是能够进行多次装饰&lt;br&#x2F;&gt; * 作用：引入抽象构件类， 给具体构件类增加职责，但是具体职责在其子类中实现&lt;br&#x2F;&gt; * @author rechael * *&#x2F;public class Decorator extends Component &#123;    &#x2F;&#x2F; 维持一个对抽象构件对象的引用    private Component component;    &#x2F;&#x2F; 注入一个抽象构件类型的对象    public Decorator(Component component) &#123;        this.component &#x3D; component;    &#125;    @Override    public void operation() &#123;        &#x2F;&#x2F; 调用原有业务方法        component.operation();    &#125;&#125;</code></pre><ul><li>角色：具体装饰类 <code>ConcreteDecoratorA.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 设计模式之 装饰模式&lt;br&#x2F;&gt; * 角色：具体装饰类&lt;br&#x2F;&gt; * 向构件添加新的具体的职责、扩充原有对象的行为 * @author rechael * *&#x2F;public class ConcreteDecoratorA extends Decorator &#123;    public ConcreteDecoratorA(Component component) &#123;        super(component);    &#125;    @Override    public void operation() &#123;        super.operation();        &#x2F;&#x2F; 调用增强业务方法，对原有对象进行装饰、扩展、增强        addedBehavior();    &#125;    private void addedBehavior()&#123;        System.out.println(&quot;我是具体的装饰类A，我可以增强原有对象方法&quot;);    &#125;&#125;</code></pre><ul><li>角色：具体装饰类 <code>ConcreteDecoratorB.java</code></li></ul><pre><code class="hljs plain">&#x2F;** * 设计模式之 装饰模式&lt;br&#x2F;&gt; * 角色：具体装饰类&lt;br&#x2F;&gt; * 向构件添加新的具体的职责、扩充原有对象的行为 * @author  rechael * *&#x2F;public class ConcreteDecoratorB extends Decorator &#123;    public ConcreteDecoratorB(Component component) &#123;        super(component);    &#125;    @Override    public void operation() &#123;        super.operation();        &#x2F;&#x2F; 调用增强业务方法，对原有对象进行装饰、扩展、增强        addedOtherBehavior();    &#125;    private void addedOtherBehavior()&#123;        System.out.println(&quot;我是具体的装饰类B，我也可以增强原有对象方法&quot;);    &#125;&#125;</code></pre><ul><li>客户端测试类 <code>Client.java</code></li></ul><pre><code class="hljs plain">public class Client &#123;    public static void main(String[] args) &#123;        Component component,decoratorA;        component &#x3D; new ConcreteComponent();        decoratorA &#x3D; new ConcreteDecoratorA(component);        &#x2F;&#x2F; 对原有具体构件类ConcreteComponent的增强行为        decoratorA.operation();        System.out.println(&quot;---------------------------\n&quot;);        System.out.println(&quot;---对原有构件对象进行 decoratorA、decoratorB 二次装饰---&quot;);        &#x2F;&#x2F; 如果需要对原有构件对象装饰后的decoratorA对象上进行再次装饰        Component decoratorB;        decoratorB &#x3D; new ConcreteDecoratorB(decoratorA);        decoratorB.operation();    &#125;&#125;</code></pre><ul><li>运行结果</li></ul><pre><code class="hljs plain">我是具体的构件类(被装饰对象)，这是我的原有方法我是具体的装饰类A，我可以增强原有对象方法------------------------------对原有构件对象进行 decoratorA、decoratorB 二次装饰---我是具体的构件类(被装饰对象)，这是我的原有方法我是具体的装饰类A，我可以增强原有对象方法我是具体的装饰类B，我也可以增强原有对象方法</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>设计模式</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Decorator Pattern</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>ubuntu14.04 Docker实战</title>
+    <link href="/2015/04/20/ubuntu14-04-Docker%E5%AE%9E%E6%88%98/"/>
+    <url>/2015/04/20/ubuntu14-04-Docker%E5%AE%9E%E6%88%98/</url>
+    
+    <content type="html"><![CDATA[<p>参考自<a href="https://www.docker.com/" target="_blank" rel="noopener">docker官网</a><br>##安装docker<br>确认wget已经安装</p><p>如未安装请使用如下命令安装</p><pre><code class="hljs plain">$ sudo apt-get update $ sudo apt-get install wget</code></pre><p>安装docker</p><pre><code class="hljs plain">$ wget -qO- https:&#x2F;&#x2F;get.docker.com&#x2F; | sh</code></pre><p>确认是否安装完毕</p><pre><code class="hljs plain">$ sudo docker run hello-world</code></pre><p>##docker基本命令使用</p><p>使用如下命令获取需要的docker镜像</p><p><code>$ sudo docker pull ubuntu:14.04</code></p><p>或者搜索docker容器</p><pre><code class="hljs plain">$ sudo docker search ubuntuNAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATEDubuntu                           Official Ubuntu base image                      1585      [OK]ansible&#x2F;ubuntu14.04-ansible      Ubuntu 14.04 LTS with ansible                   49                   [OK]ubuntu-upstart                   Upstart is an event-based replacement for ...   25        [OK]torusware&#x2F;speedus-ubuntu         Always updated official Ubuntu docker imag...   24                   [OK]tutum&#x2F;ubuntu                     Ubuntu image with SSH access. For the root...   22                   [OK]sequenceiq&#x2F;hadoop-ubuntu         An easy way to try Hadoop on Ubuntu             14                   [OK]dorowu&#x2F;ubuntu-desktop-lxde-vnc   Ubuntu with openssh-server and NoVNC on po...   11                   [OK]guilhem&#x2F;vagrant-ubuntu                                                           9                    [OK]ubuntu-debootstrap               debootstrap --variant&#x3D;minbase --components...   7         [OK]......</code></pre><p>运行docker容器并且进入docker容器的命令行</p><pre><code class="hljs plain">$ sudo docker run -t -i ubuntu:14.04 &#x2F;bin&#x2F;bash</code></pre><p>查看正在运行的docker容器 </p><pre><code class="hljs plain">$ sudo docker psCONTAINER ID  IMAGE         COMMAND               CREATED        STATUS       PORTS NAMES1e5535038e28  ubuntu:14.04  &#x2F;bin&#x2F;sh -c &#39;while tr  2 minutes ago  Up 1 minute        insane_babbage</code></pre><p>其他docker命令可使用如下命令进行查询</p><pre><code class="hljs plain">$ sudo dockerUsage: docker [OPTIONS] COMMAND [arg...]A self-sufficient runtime for linux containers.Options:  --api-cors-header&#x3D;                   Set CORS headers in the remote API  -b, --bridge&#x3D;                        Attach containers to a network bridge  --bip&#x3D;                               Specify network bridge IP  -D, --debug&#x3D;false                    Enable debug mode  -d, --daemon&#x3D;false                   Enable daemon mode  ......</code></pre><p>##创建自己的docker images并且导出</p><p>###运行下载好的docker images</p><pre><code class="hljs plain">$ sudo docker run -t -i ubuntu:14.04 &#x2F;bin&#x2F;bashroot@92e3aeb08f18:&#x2F;#</code></pre><p>###docker镜像操作</p><p>例如</p><pre><code class="hljs plain">root@92e3aeb08f18:&#x2F;#apt-get install ant</code></pre><p>等待安装完毕</p><p>使用docker commit进行保存操作</p><pre><code class="hljs plain">root@92e3aeb08f18:&#x2F;#exit$ sudo docker commit -m &quot;add ant&quot; -a &quot;ruisu&quot;  92e3aeb08f18 ubuntu:14.04b45c7b4118ce4da89bf1e8f9a52ac2e701b4de8546bfba790cb10fe847ed3c4fb</code></pre><p> 使用如下命令便会看到本地images多了一个叫ubuntu:14.04b的docker images</p><pre><code class="hljs plain">$ sudo docker images</code></pre><p>如果已经注册docker hub账户可以直接push images到云端</p><pre><code class="hljs plain">$ sudo docker push ubuntu:14.04b</code></pre><p>##配置docker私有库</p><p>上传仓库的导出文件xx.tar.gz到服务器的任意目录,这里上传到根目录</p><p>加载仓库镜像 </p><pre><code class="hljs plain"># cd &#x2F;# docker load &lt; xx.tar.gz</code></pre><p>查看导入的仓库镜像</p><pre><code class="hljs plain"># docker images</code></pre><p>启动仓库容器</p><pre><code class="hljs plain"># docker run -it --name&#x3D;xx --net&#x3D;host --restart&#x3D;always --privileged&#x3D;true xx</code></pre><p>查看启动的仓库容器</p><pre><code class="hljs plain"># docker ps -a</code></pre><p>##docker常用操作</p><p>###镜像导入</p><ul><li>load方式导入镜像</li></ul><pre><code class="hljs plain">用法:docker load &lt; 导入的文件名称示例:docker load &lt; nginx_v1.0.tar.gz 在服务器上加载镜像</code></pre><ul><li>import导入镜像文件</li></ul><pre><code class="hljs plain">用法:cat 文件名称 | docker import - [REPOSITORY][:tag]示例: nginx_v1.0.tar.gz | docker import - 导入不打tag的镜像示例: nginx_v1.0.tar.gz | docker import - 192.168.83.107:5000&#x2F;nginx:v1 导入打tag的镜像镜像更改</code></pre><ul><li>修改镜像tag</li></ul><pre><code class="hljs plain">用法:docker tag 镜像ID REPOSITORY:tag 示例:docker tag d6 192.168.83.107:5000&#x2F;nginx:v1</code></pre><ul><li>删除镜像tag</li></ul><pre><code class="hljs plain">用法:docker rmi REPOSITORY:tag示例:docker rmi 192.168.83.107:5000&#x2F;nginx:v1容器</code></pre><ul><li>启动docker容器</li></ul><pre><code class="hljs plain">用法:docker run [OPTIONS] IMAGE [COMMAND] [ARG...]示例:docker run -it --name&#x3D;nginx --net&#x3D;host --privileged&#x3D;true --restart&#x3D;always 192.168.83.107:5000&#x2F;nginx:v1 启动容器 示例:docker run -it --name&#x3D;nginx --net&#x3D;host --restart&#x3D;always --privileged&#x3D;true 192.168.83.107:5000&#x2F;nginx:v1 &#x2F;bin&#x2F;bash 以shell的方式启动容器 退出容器ctrl+p+q退出容器  以交互式方式登录容器后可以采用上述方式退出镜像上传下载</code></pre><ul><li>push镜像到仓库</li></ul><pre><code class="hljs plain">用法:docker push REPOSITORY:tag示例:docker push 192.168.83.107:5000&#x2F;nginx:v1 备注:在向私有仓库push镜像的时候需要在docker客户机器的docker文件中增加如下内容(标红内容):vi &#x2F;etc&#x2F;default&#x2F;dockerDOCKER_OPTS&#x3D;&quot;--insecure-registry 192.168.83.107:5000&quot; &#x2F;&#x2F; DOCKER_OPTS&#x3D;&quot;--insecure-registry 仓库服务器地址:5000&quot; service docker restart &#x2F;&#x2F;重启docker服务生效</code></pre><ul><li>pull镜像到本地</li></ul><pre><code class="hljs plain">用法:docker pull REPOSITORY:tag示例:docker pull 192.168.83.107:5000&#x2F;nginx:v1镜像导出</code></pre><ul><li>save方式导出镜像</li></ul><pre><code class="hljs plain">用法:docker save -o 导出的文件名称 镜像ID 示例:docker save -o&#x3D;nginx_v1.0.tar.gz b8053ab2e5d3 备注:该导出方式导出的对象是镜像</code></pre><ul><li>export方式导出镜像</li></ul><pre><code class="hljs plain">用法:docker export 容器ID &gt; 导出的文件路径及导出的文件名称示例:docker export 8c71d5f9e436 &gt; .&#x2F;nginx_v1.0.tar.gz 备注:该导出方式导出的对象为容器,save方式导出的文件比export方式导出的文件小</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>docker</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Ubuntu 14.04 LTS 源</title>
+    <link href="/2015/04/20/Ubuntu-14-04-LTS-%E6%BA%90/"/>
+    <url>/2015/04/20/Ubuntu-14-04-LTS-%E6%BA%90/</url>
+    
+    <content type="html"><![CDATA[<h1 id="阿里云"><a href="#阿里云" class="headerlink" title="阿里云"></a>阿里云</h1><pre><code class="hljs plain">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-security main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-updates main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-proposed main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-backports main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-security main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-updates main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-proposed main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; trusty-backports main restricted universe multiverse</code></pre><h1 id="网易"><a href="#网易" class="headerlink" title="网易"></a>网易</h1><pre><code class="hljs plain">deb http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-security main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-updates main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-proposed main restricted universe multiversedeb http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-backports main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-security main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-updates main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-proposed main restricted universe multiversedeb-src http:&#x2F;&#x2F;mirrors.163.com&#x2F;ubuntu&#x2F; trusty-backports main restricted universe multiverse</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ubuntu</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>mysql更改存储路径</title>
+    <link href="/2015/04/03/mysql%E6%9B%B4%E6%94%B9%E5%AD%98%E5%82%A8%E8%B7%AF%E5%BE%84/"/>
+    <url>/2015/04/03/mysql%E6%9B%B4%E6%94%B9%E5%AD%98%E5%82%A8%E8%B7%AF%E5%BE%84/</url>
+    
+    <content type="html"><![CDATA[<p>###1、 关闭selinux</p><pre><code class="hljs plain">vi &#x2F;etc&#x2F;selinux&#x2F;config设置SELINUX&#x3D;disabled</code></pre><p>###2、停止mysql服务</p><pre><code class="hljs plain">service mysql stop</code></pre><p>###3、创建新数据存储目录</p><pre><code class="hljs plain">mkdir &#x2F;dbdir</code></pre><p>###4、更新新数据目录的属主与属组</p><pre><code class="hljs plain">chown mysql:mysql &#x2F;dbdir</code></pre><p>###5、拷贝var/lib/mysql/目录下的所有文件到/dbdir目录下</p><pre><code class="hljs plain">cp -rp * &#x2F;dbdir&#x2F;</code></pre><p>###6、修改my.cnf文件</p><pre><code class="hljs plain">vi &#x2F;etc&#x2F;my.cnf 修改datadir为datadir &#x3D; &#x2F;dbdir&#x2F;</code></pre><p>###7、重启mysql服务</p><pre><code class="hljs plain">service mysql start</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>database</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mysql</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Xcode6为什么干掉pch（Precompile Prefix Header）以及如何添加pch文件</title>
+    <link href="/2015/03/24/Xcode6%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B9%B2%E6%8E%89pch%EF%BC%88Precompile-Prefix-Header%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0pch%E6%96%87%E4%BB%B6/"/>
+    <url>/2015/03/24/Xcode6%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B9%B2%E6%8E%89pch%EF%BC%88Precompile-Prefix-Header%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0pch%E6%96%87%E4%BB%B6/</url>
+    
+    <content type="html"><![CDATA[<p>一直在用xcode6开发，但发现下载的一些项目都是在xcode5上创建的，所以一直没注意到，xcode6竟然干掉pch文件了。</p><p>为什么xcode6没有自动创建pch文件呢？</p><p>简单地看：我们在写项目的时候，大部分宏定义，头文件导入都在这里，Xcode6去掉Precompile Prefix Header的主要原因可能在于Prefix Header大大的增加了Build的时间。没有了Prefix Header之后就要通过手动@import来手动导入头文件了，在失去了编程便利性的同时也降低了Build的时间。</p><h2 id="如何在Xcode6中添加pch（Precompile-Prefix-Header）？"><a href="#如何在Xcode6中添加pch（Precompile-Prefix-Header）？" class="headerlink" title="如何在Xcode6中添加pch（Precompile Prefix Header）？"></a>如何在Xcode6中添加pch（Precompile Prefix Header）？</h2><p>1，Command+N，打开新建文件窗口：ios-&gt;other-&gt;PCH file，创建一个pch文件：“工程名-Prefix.pch”：</p><p><img src="https://www.flyada.com/images/QQ20150324-1.png" srcset="/img/loading.gif" alt="图片1"></p><p>2，将building setting中的precompile header选项的路径添加“$(SRCROOT)/项目名称/pch文件名”（例如：$(SRCROOT)/xx/xx-Prefix.pch）</p><p><img src="https://www.flyada.com/images/QQ20150324-2.png" srcset="/img/loading.gif" alt="图片2"></p><p>可以了，编译一下程序，如果有错误检查一下添加的路径是否正确。</p><p>3，将Precompile Prefix Header为YES，预编译后的pch文件会被缓存起来，可以提高编译速度</p><p><img src="https://www.flyada.com/images/QQ20150324-3.png" srcset="/img/loading.gif" alt="图片3"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>xcode6</tag>
+      
+      <tag>pch</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Android添加国内镜像下载sdk</title>
+    <link href="/2015/02/10/Android%E6%B7%BB%E5%8A%A0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E4%B8%8B%E8%BD%BDsdk/"/>
+    <url>/2015/02/10/Android%E6%B7%BB%E5%8A%A0%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E4%B8%8B%E8%BD%BDsdk/</url>
+    
+    <content type="html"><![CDATA[<p>使用android sdk manager无法更新，必须要fq</p><p>提供一个不需要fq就能直接在线更新办法<br>如下：<br><img src="https://www.flyada.com/images/QQ20150210-1@2x.png" srcset="/img/loading.gif" alt="添加镜像"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>sdk</tag>
+      
+      <tag>镜像</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习8-gawk与sed(3)</title>
+    <link href="/2015/01/21/shell%E5%A4%8D%E4%B9%A08-gawk%E4%B8%8Esed-3/"/>
+    <url>/2015/01/21/shell%E5%A4%8D%E4%B9%A08-gawk%E4%B8%8Esed-3/</url>
+    
+    <content type="html"><![CDATA[<p>##流编辑器sed</p><p>###介绍</p><hr><p>sed(stream editor,流编辑器)是一个批处理编辑器，可以对来自文件或者标准输入的输入流进行转换。sed通常就被用作管道中的过滤器。<br>sed一次处理一行文本并且把处理结果输出送往标准输出设备。sed把当前处理的行存储在临时缓冲区，称为模式空间，一旦sed完成对模式空间中的行的处理，模式空间的行被送完屏幕。行被处理完成以后，就被移出模式空间，程序接着读入下一行，处理，显示，移除。通过存储每一行在临时缓冲区，缓冲区操作该行，保证了原始文件不被破坏。</p><p>###语法</p><hr><pre><code class="hljs plain">sed [-n] program [file-list]sed [-n] -f program-file[file-list]sed [-n] [quiet]sed [-n] [--silent][-n]sed [-n] [--in-place[&#x3D;suffix]][-l[suffix]]sed [-n] [--help]</code></pre><p>实例</p><pre><code class="hljs plain">$ vim show3-8#!&#x2F;bin&#x2F;sed -f2,8 p&#x2F;&#x2F;显示example文件的2到8行$ sed -n -f show2-8 example&#x2F;&#x2F;显示example的2到6行$ sed -n &#39;2,6 p&#39; example</code></pre><p>指令</p><ul><li>d  删除指令  删除指令导致sed不输出被选择的行</li><li>n  下一条指令  下一条指令输出当前选择的行，然后从输入中读入下一行</li><li>a  追加指令  追加命令在选择的行之后插入一行或多行文本。如果a指令前有俩个地址，那么选定的每一行之后添加文本</li><li>i  插入指令  插入指令与a指令相同，只不过i指令是将文本添加到选定的行之前</li><li>c  修改指令  修改指令与a指令和i指令类似。不同的是他将选定的行修改为新的文本，如果指定一个范围，c指令能把整个范围内的行换成新文本</li><li>s  替换指令  sed替换指令与vim中的类似</li><li>p  打印指令  打印指令将选定的行写入标准输出</li><li>w file  写指令  写指令和p指令类似，不同的时他将输出写入由file指定的文件中。w指令后接一个空格作为输出的文件名</li><li>r file  读指令  读指令读出指定文件的内容并添加到选定的行之后。r指令后接一个空格和作为输入的文件名</li><li>q  退出指令  退出指令使得sed立即结束</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+      <tag>sed</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习7-gawk与sed(2)</title>
+    <link href="/2015/01/20/shell%E5%A4%8D%E4%B9%A07-gawk%E4%B8%8Esed-2/"/>
+    <url>/2015/01/20/shell%E5%A4%8D%E4%B9%A07-gawk%E4%B8%8Esed-2/</url>
+    
+    <content type="html"><![CDATA[<p>##gawk编程设计</p><p>###函数</p><ul><li>length(str)  返回str的字符个数</li><li>int(num) 返回num的整数部分</li><li>index(str1,str2) 返回str2在str1中的位置，如果str2不存在则返回0</li><li>split(str,arr,del) 用del作为定界符，将str的元素放到数组arr[1]…arr[n]中，返回数组元素个数</li><li>sprintf(fmt,args) 根据fmt格式化args并返回格式化后的字符串，模范c语言同名函数</li><li>substr(str,pos,len) 返回str中从pos开始的长度为len个字符的字符串</li><li>tolower(str) 返回str的副本，且其中所有大写字母换成相应的小写字母</li><li>toupper(str) 返回str的副本，且其中的所有小写字母换成相应的大写字母</li></ul><p>###关联数组</p><p>关联数组是gawk最强大功能之一，关联数组使用字符串作为索引，在使用关联数组时候，用户可以用数值字符串作为索引来模仿系统的数字索引数组。</p><p>用户可以像某个值指派给任何其他awk变量一样，语法如下</p><pre><code class="hljs plain">array[string] &#x3D;valuearray为数组的名称，string为用户将要赋值的元素在数组中的索引，value为将指派给该元素的值</code></pre><p>可以将特殊的for结构用于关联数组，语法如下</p><pre><code class="hljs plain">for (elem in array) action</code></pre><p>for结构将遍历数组中的元素，elem表示数组中每个元素的值，array为数组名称，action为awk对数组中每个元素所采取的动作。可以在action中使用elem变量。</p><p>例如：</p><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> vim arrayexample</span><span class="hljs-meta">#</span><span class="bash">filename:arrayexample</span>awk '&#123;name[$1]=$5&#125;END&#123;for(elem in name)print elem" 的成绩为:" name[elem]&#125;' example<span class="hljs-meta">$</span><span class="bash"> chmod u+x arrayexample</span><span class="hljs-meta">$</span><span class="bash"> ./arrayexample</span>xuxin 的成绩为:90lisi 的成绩为:99xuxing 的成绩为:81liskai 的成绩为:78lichang 的成绩为:99wangxuebing 的成绩为:94zhangsansan 的成绩为:88wanglijiang 的成绩为:78zhangsan 的成绩为:83langxuebing 的成绩为:86</code></pre><p>###格式化输出命令<br>使用printf代替print控制awk产生的输出。<br>printf “control-string”,arg1,arg2,…,argn</p><ul><li>d 十进制</li><li>e 指数表示</li><li>f 浮点数字</li><li>g 使用f或者e中较短的一个</li><li>o 无符号八进制</li><li>s 字符串</li><li>x 无符号十六进制</li></ul><p>###关系运算符</p><pre><code class="hljs plain">&lt;、&lt;&#x3D;、&#x3D;&#x3D;、!&#x3D;、&gt;&#x3D;、&gt;</code></pre><p>###算数运算符</p><pre><code class="hljs plain">*、&#x2F;、%、+、-、&#x3D;、++、--、+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、%&#x3D;</code></pre><p>例子</p><pre><code class="hljs plain">$ vim report#!&#x2F;bin&#x2F;bash#filename:reportif [ $# &#x3D;&#x3D; 0 ]then   echo &quot;必须指定一个数据文件&quot;   exit 1fi(date;cat $1)|awk &#39;  BEGIN&#123;total&#x3D;0&#125;  NR &#x3D;&#x3D; 1 &#123;print &quot;统计时间:&quot;,$2,$3&quot;,&quot;$6;print &quot;--------------&quot;&#125;  NR &gt; 1 &#123;print $1 &quot;:&quot; $5;total+&#x3D;$5&#125;  END &#123;print &quot;--------------&quot;;printf &quot;平均分为: %4.2f\n&quot;,total&#x2F;(NR-1)&#125;  &#39;$ chmod u+x report$ .&#x2F;report必须指定一个数据文件$ .&#x2F;report example统计时间: 1月21日 星期三,--------------lichang:99wanglijiang:78zhangsansan:88langxuebing:86liskai:78zhangsan:83lisi:99wanglijiang:78xuxing:81xuxin:90wangxuebing:94--------------平均分为: 86.73</code></pre><p>###流程控制语句</p><ul><li>if…else结构</li></ul><pre><code class="hljs plain">$ vim ifelse#filename:ifelseBEGIN&#123;      name&#x3D;&quot;John&quot;      if( name &#x3D;&#x3D; &quot;zhangsan&quot; )         print &quot; name is zhangsan&quot;      else         print &quot; name is not zhangsan, it is&quot;,name&#125;$ awk -f ifelse name is not zhangsan, it is John</code></pre><ul><li>while循环结构</li></ul><pre><code class="hljs plain">$ vim while1#filename:while1BEGIN&#123;   n &#x3D; 2   while( n &lt;&#x3D; 9 )   &#123;      print &quot;2^&quot; n&quot;&#x3D;&quot;,2**n      n++   &#125;&#125;$ awk -f while12^2&#x3D; 42^3&#x3D; 82^4&#x3D; 162^5&#x3D; 322^6&#x3D; 642^7&#x3D; 1282^8&#x3D; 2562^9&#x3D; 512</code></pre><ul><li>for循环结构</li></ul><pre><code class="hljs plain">$ vim for1#filename:for1BEGIN &#123;      for(n&#x3D;2;n&lt;&#x3D;9;n++)         print &quot;2^&quot; n&quot;&#x3D;&quot;,2**n&#125;$ awk -f for12^2&#x3D; 42^3&#x3D; 82^4&#x3D; 162^5&#x3D; 322^6&#x3D; 642^7&#x3D; 1282^8&#x3D; 2562^9&#x3D; 512</code></pre><ul><li>break</li><li>continue</li></ul><p>###getline:控制输出</p><p>例子</p><pre><code class="hljs plain">$ vim glineBEGIN&#123;      while( getline LINE )      &#123;          print NR&quot;: &quot;LINE      &#125;&#125;$ vim testdate1111111222222233333334444444$ awk -f gline &lt; testdate1: 11111112: 22222223: 33333334: 4444444</code></pre><p>###协进程<br>协进程是指与另一个进程并行的进程。gawk从版本3.1开始就可以通过协进程方式直接与某个后台进程进行信息交换<br>gawk通过在程序名称前面添加双向管道运算符|&amp;来标识在后台运行的协进程</p><p>###网络数据交换<br>gawk可以通过IP网络连接到另一个系统上的某个进程进行信息交换。当用户指定了某个以/inet/开头的特殊文件的格式如下。<br>/inet/protocol/local-port/remote-host/remote-port<br>其中的protocol通常为TCP也可以为UDP。local-port表示为本地端口，如果用户希望让gawk选择一个端口，也可以将local-port设置为0。remote-host为远程主机的IP地址或域名，remote-port表示远程端口号，可以指定http也可以指定ftp地址。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+      <tag>sed</tag>
+      
+      <tag>awk</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>linux扩展根分区</title>
+    <link href="/2015/01/15/linux%E6%89%A9%E5%B1%95%E6%A0%B9%E5%88%86%E5%8C%BA/"/>
+    <url>/2015/01/15/linux%E6%89%A9%E5%B1%95%E6%A0%B9%E5%88%86%E5%8C%BA/</url>
+    
+    <content type="html"><![CDATA[<p>现况，现有一台服务器根分区空间不足了，目前有个一块sda硬盘未使用<br>解决方案：<br>sda划出一个分区扩展到根分区</p><p>操作如下</p><ul><li>首先sda分出一个分区，并且格式化</li></ul><p>分区</p><pre><code class="hljs plain">$ fdisk &#x2F;dev&#x2F;sdacommand : ncommand action   e extended   p primary partitionppartition number(1-4):2 （如果此时存在一个sda1则选择2，如没有分区，直接选择1）first cylinder(1-143595,default 1):直接enterusing default value 1Last cylinder,+cylinders or +size: +700Gcommand : wq  此部wq保存退出</code></pre><p>格式化</p><pre><code class="hljs plain">$ mkfs.ext4 &#x2F;dev&#x2F;sda2此部可能比较慢等待执行到writing superblocks and  filesystem accounting information:直接按回车按键，等待执行完成</code></pre><ul><li>扩展sda2到根分区</li></ul><pre><code class="hljs plain">首先创建pv$ pvcreate &#x2F;dev&#x2F;sda2查看当前卷$ vgdisplay   此时查看到vg_name后面需要宽展sda2到当前卷$ vgextend &#x2F;dev&#x2F;查询到的vg_name &#x2F;dev&#x2F;sda2$ &#x2F;sbin&#x2F;resize2fs &#x2F;dev&#x2F;查询到的vg_name&#x2F;根挂载点所对应的卷名此步如果执行不可扩展根分区，请执行前先执行一下 lvextend -L +700G &#x2F;dev&#x2F;mapper&#x2F;vg_lc-lv_root 在执行此条命令$ df -h此时可以看到挂载的文件系统名和挂载点以及容量的信息</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>分区</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习6-gawk与sed</title>
+    <link href="/2015/01/15/shell%E5%A4%8D%E4%B9%A06-gawk%E4%B8%8Esed/"/>
+    <url>/2015/01/15/shell%E5%A4%8D%E4%B9%A06-gawk%E4%B8%8Esed/</url>
+    
+    <content type="html"><![CDATA[<p>##过滤器gawk(awk的GNU版本)<br>gawk是可以完成模式扫描和数据处理的语言。gawk搜索一个或者多个文件，查找其中匹配模式的记录,通常为行，通过执行指定的动作来处理这些记录。gawk可以使用变量、函数、算数运算符、关系运算符、关系数组、控制语句和c语言的printf语句，而高级gawk编程可以利用getline语句输入数据，使用协作进程让gawk与其他程序进行数据交换，或者通过网络连接与运行在远程系统上的数据交换数据。</p><p><strong><em>gawk常用选项说明</em></strong></p> <pre><code class="hljs plain">-F x  把x作为输入字段分隔符的值-f 从后面的文件中而不是标准输入中读取gawk程序，可命令行多次指定这个选项-W help 显示gawk的帮助信息-W hint 对不正确或者不利于移植的结构发出警告</code></pre><p> <strong><em>例子</em></strong></p><p> 模式的使用</p><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'$2 &gt;= 1988&#123;print NR&#125;'</span> example </span>1578<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'/math/'</span> example   //数据行包含math的行</span>lichang       1989   male     math       99langxuebing   1978   male     math       86lisi          1988   male     math       99wangxuebing   1979   male     math       94<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'$1~/l/'</span> example     //第一列包含l的数据行</span>lichang       1989   male     math       99wanglijiang   1987   femail   chinese    78langxuebing   1978   male     math       86liskai        1990   female   chinese    78lisi          1988   male     math       99wanglijiang   1989   female   chinese    78<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'&#123;if($2~/1990/)$5=$5+5;print&#125;'</span> example  //第二列为1990的行第五列加上5</span>lichang       1989   male     math       99wanglijiang   1987   femail   chinese    78zhangsansan   1977   male     computer   88langxuebing   1978   male     math       86liskai 1990 female chinese 83zhangsan      1977   male     computer   83lisi          1988   male     math       99wanglijiang   1989   female   chinese    78xuxing        1979   male     economic   81xuxin         1985   female   english    90wangxuebing   1979   male     math       94<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'BEGIN&#123;print "-----------------学生基本信息----------------"&#125; &#123;print&#125;'</span> example  </span>-----------------学生基本信息----------------lichang       1989   male     math       99wanglijiang   1987   femail   chinese    78zhangsansan   1977   male     computer   88langxuebing   1978   male     math       86liskai        1990   female   chinese    78zhangsan      1977   male     computer   83lisi          1988   male     math       99wanglijiang   1989   female   chinese    78xuxing        1979   male     economic   81xuxin         1985   female   english    90wangxuebing   1979   male     math       94<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'BEGIN&#123;print "统计学生总成绩";total=0&#125; &#123;print $5;total=total+$5&#125; END&#123;printf"学生平均成绩：%.2f\n",total/NR&#125;'</span> example </span>统计学生总成绩9978888678839978819094学生平均成绩：86.73<span class="hljs-meta">$</span><span class="bash"> awk -F: <span class="hljs-string">'/zhangsan/,/zhangsansan/'</span> example //包含zhangsan和zhangsansan之间的文本行</span>zhangsansan   1977   male     computer   88zhangsan      1977   male     computer   83lisi          1988   male     math       99wanglijiang   1989   female   chinese    78xuxing        1979   male     economic   81xuxin         1985   female   english    90wangxuebing   1979   male     math       94</code></pre><p><strong><em>指定动作</em></strong></p><p>如果awk匹配某个模式，它将执行awk命令的动作部分所指定的动作。如果没有指定动作，awk将执行默认动作，即print命令（可以用{print}显示显示），这个动作将记录从输入复制到标准输出。<br>如果在print命令后面带上参数，awk将只显示用户指定的参数。这些参数可以是变量或者字符串常量。可以将print命令的输出发送到文件（&gt;）、追加到文件（&gt;&gt;）或者通过管道将其发送到另外一个程序的输入（|）。协进程（|&amp;）是一个双向管道，可以与运行在后台的程序交换数据。<br>除非用逗号将print命令中的各输入项区分开，否则awk将他们连起来输出。逗号使得awk用输出字段分隔符将各项分隔开。</p><p><strong><em>使用重定向输出</em></strong></p><p>awk可通过（&gt;）可以重定向输出到文件</p><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> vim redrectout</span>/1989/ &#123;print &gt; "year1989"&#125;/1978/ &#123;print &gt; "year1978"&#125;END&#123;print "输出完毕!"&#125;<span class="hljs-meta">$</span><span class="bash"> awk -f redirectout example</span>输出完毕!<span class="hljs-meta">$</span><span class="bash"> cat year1978</span>langxuebing   1978   male     math       86<span class="hljs-meta">$</span><span class="bash"> cat year1989</span>lichang       1989   male     math       99wanglijiang   1989   female   chinese    78</code></pre><p><strong><em>字符分隔符输出</em></strong><br>默认分隔符为空格，保存在变量OFS中，在用print语句进行输出打印时候，指定的多个字段之间用逗号分隔，而逗号表示就是OFS的值</p><pre><code class="hljs shell">//下面是输出包含Tom并且以:作为分隔符的行的第二行和第三行<span class="hljs-meta">$</span><span class="bash"> awk -F[:] <span class="hljs-string">'/Tom/&#123;print $2,$3&#125;'</span> student </span>10511163 93-09-1110501166 88-01-11//下面是输出字段的分隔符重置为Tab(转义字符为\t)<span class="hljs-meta">$</span><span class="bash"> awk <span class="hljs-string">'BEGIN&#123;FS=":";OFS="\t"&#125;&#123;print $1,$2,$3&#125;'</span> student</span>Tom Helleen1051116393-09-11Tom Changle1050116688-01-11Billy Black1050116593-02-18John Hellen1050116293-04-13Sam Possion1050117198-11-19Mary Degens1050116995-05-22Suli Vanlen1050117090-09-17</code></pre><p><strong><em>记录和字段介绍</em></strong></p><p>gawk把输入文件看做一个具有一定格式和结构的连续字符串来处理。默认每一个以换行符结束的行为一个记录<br>记录中每一个以空格或者Tab分隔符的字符串为一个字段，称为字段（也称为域）。每一行记录的字段数目是不一样的，变量NF中保存了当前记录的字段数目。变量FS保存了字段使用的分隔符，默认为空格符或者Tab。可以在BEGIN语句中或命令行使用-F选项来修改FS的设置，从而修改分隔符。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+      <tag>gawk</tag>
+      
+      <tag>sed</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习5-grep命令</title>
+    <link href="/2015/01/14/shell%E5%A4%8D%E4%B9%A05-grep%E5%91%BD%E4%BB%A4/"/>
+    <url>/2015/01/14/shell%E5%A4%8D%E4%B9%A05-grep%E5%91%BD%E4%BB%A4/</url>
+    
+    <content type="html"><![CDATA[<p>#grep命令</p><p>##介绍<br>grep包括grep、egrep和fgrep， egrep和fgrep与grep基本是一样的程序，通过调用不同的参数，grep可以实现大多数grep家族具有的功能，在linux中使用GNU版本的grep,可以通过-E、-F命令行选项来使用egrep和fgrep的功能</p><pre><code class="hljs plain">$ grep test a.txt会返回a.txt中包含test的文本行，不会返回Test之类的行，大小写敏感的$ grep -i test a.txt会返回所有匹配Test、tEst等混合大小写的拼写</code></pre><p>##grep与正则表达式</p><pre><code class="hljs plain">grep的正则表达式元字符基本集包括 ^、$、*、[]、[^]、\&gt;和\&lt;^ 行首定位符$ 行尾定位符. 匹配任意一个字符* 匹配0个或多个前导字符[] 表示匹配指定范围内的其中一个字符[^] 匹配不在指定范围内的字符\&lt; 词首定位符\&gt; 词尾定位符  例如&#39;grep\&gt;&#39;匹配包含以grep结尾的单词的行x\&#123;m\&#125;   重复x字符m次  例如&#39;o\&#123;5\&#125;&#39;x\&#123;m,\&#125;  重复x字符至少m次x\&#123;m,n\&#125; 重复x字符，至少m次，不多于n次</code></pre><p>##grep常用参数</p><ul><li>-# 同时显示匹配行上下#行，#表示数字</li><li>-b 在每行前打印字符偏移量</li><li>-c 只打印匹配的行数，不显示匹配的内容</li><li>-f 从文件中提取模板</li><li>-h 当搜索多个文件时，不显示匹配文件名前缀</li><li>-i 忽略大小写</li><li>-q 取消显示，只返回退出的状态</li><li>-l 打印匹配模板的文件清单</li><li>-L 打印不匹配模板的文件清单</li><li>-n 在匹配的行前面打印行号</li><li>-s 不显示关于不存在或者无法读取文件的错误信息</li><li>-v 反搜索，只显示不匹配的行</li><li>-w 如果被<code>\&lt;</code>和<code>\&gt;</code>引用，就把表达式作为一个单词搜索</li><li>-V 显示软件版本</li></ul><p>##egrep和fgrep<br>egrep表示扩展grep(extends grep),执行效率比grep高，但需占用较大的内存空间，用于搜素更复杂的正则表达式，另外一个fgrep，占用空间比egrep小，且速度比grep快，但只能处理简单的字符串，不能处理正则表达式</p><pre><code class="hljs plain">grep &#39;[)]\;&#39; test  通过通配符包含);的匹配test文件grep -E &#39;[)]\;&#39; test  -E通过通配符包含);的匹配test文件egrep &#39;[)]\;&#39; test   egrep直接就默认以通配符模式去匹配搜索如果没有反斜杠标识是正则表达式，grep不加-E去搜索是不会按照正则表达式方式去识别，而egrep默认就会识别，grep -E才会默认识别。</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习4-shell正则表达式</title>
+    <link href="/2015/01/14/shell%E5%A4%8D%E4%B9%A04-shell%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+    <url>/2015/01/14/shell%E5%A4%8D%E4%B9%A04-shell%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<p>##字符集和类<br>###连字符表示一个字符范围</p><pre><code class="hljs plain">[a-zA-Z] 表示匹配到的任意一个字母[A-Z] 表示匹配任意一个大写字母[a-z] 表示匹配任意一个小写字母[0-9] 表示匹配任意一个数字[0-9\*\+] 表示匹配数字、星号、加号中的任意一个</code></pre><p>###如果中括号使用符号^,则表示取非</p><pre><code class="hljs plain">如上前面加上[^a-z]为非某某</code></pre><p>##重复<br>###重复定义</p><pre><code class="hljs plain">符号* 表示匹配0个或者多个前导表达式符号？表示匹配0个或者1个前导表达式符号+ 表示匹配1个或者多个前导表达式大括号&#123;&#125; 表示前导表达式指定一个最小或最大匹配数目&#123;x,y&#125; 表示前导表达式至少出现x次，但不超过y次&#123;x,&#125; 表示前导表达式出现x次或更多次</code></pre><p>##子表达式<br>###子表达式定义<br>正则表达式中可以使用小括号将一个长的表达式分隔成几个子表达式或将字符、元字符、子表达式组合在一起。<br>例如 ([xy])([wz])可以匹配”xw” “xz” “yw” “yz”</p><p>##定位字符串的开始和末尾<br>###开头和结尾的定义<br>插入符号^用于匹配字符串的头部，表示指定的字符序列必须出现在被匹配字符串的开始位置；美元符号$用于匹配字符串的尾部，表示指定字符串必须出现在被匹配字符串的结束位置</p><pre><code class="hljs plain">例子如下：^welcome 表示匹配以welcome开头的字符串est$ 表示匹配以est为结尾的字符串^[[:alpha:]]&#123;3&#125;$ 表示正则表达式匹配所有三个字母的字符串^[0-9]&#123;1,&#125;$ 匹配所有的正整数^\-&#123;0,1&#125;[0-9]&#123;1,&#125;$或者^\-?[0-9]&#123;1,&#125;$ 匹配所有的整数^\-&#123;0,1&#125;[0-9]&#123;1,&#125;\.&#123;0,1&#125;[0-9]&#123;0,&#125;$ 匹配所有的小数</code></pre><p>##分支<br>在正则表达式中使用符号|表示一个分支，分支具有“或”的意义，表示可以在多个选择中任选一个或者多个</p><pre><code class="hljs plain">例如a|b相当于[ab]^good(ness|ful|)$ 相当于匹配goodness和goodful</code></pre><p>##匹配特殊字符<br>正则表达式中特殊字符，如.、$等，是不能当做普通字符进行匹配的。要匹配这些特殊字符必须使用反斜杠\进行转义</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习3-IO重定向</title>
+    <link href="/2015/01/14/shell%E5%A4%8D%E4%B9%A03-IO%E9%87%8D%E5%AE%9A%E5%90%91/"/>
+    <url>/2015/01/14/shell%E5%A4%8D%E4%B9%A03-IO%E9%87%8D%E5%AE%9A%E5%90%91/</url>
+    
+    <content type="html"><![CDATA[<ul><li>输出重定向 (&lt;)</li><li>附加输出重定向（&lt;&lt;）</li></ul><pre><code class="hljs plain">可连续输入邮件内容，直到输入exit$ mail xxx@xx.com &lt;&lt;exit&gt; this is a text&gt; exit</code></pre><ul><li>错误重定向（2&gt;）</li></ul><pre><code class="hljs plain">$ ls errortest 2&gt; file把ls errortest打印的错误信息写进file文件</code></pre><ul><li>标准输出和错误输出重定向（&amp;&gt;）</li><li>输出重定向（&gt;）</li></ul><pre><code class="hljs plain">比如使用ls &#x2F;etc &gt; &#x2F;ectfilelist查看&#x2F;etc下面文件列表写进etcfilelist文件$ cat &gt; filehello shell!!!         &#x2F;&#x2F;按回车按键&#x2F;&#x2F;按ctrl+c或者ctrl+d组合按键结束向file写入文件</code></pre><ul><li>附加输出重定向 (&gt;&gt;)</li></ul><pre><code class="hljs plain">$ cat file    &#x2F;&#x2F;源文件内容$ cat &gt; file  &#x2F;&#x2F;写入内容，源内容会被覆盖$ cat &gt;&gt; file  &#x2F;&#x2F;append新的内容，源内容会被保留</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习2-引号用法</title>
+    <link href="/2015/01/14/shell%E5%A4%8D%E4%B9%A02-%E5%BC%95%E5%8F%B7%E7%94%A8%E6%B3%95/"/>
+    <url>/2015/01/14/shell%E5%A4%8D%E4%B9%A02-%E5%BC%95%E5%8F%B7%E7%94%A8%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<p>##引号的用法</p><p><strong><em>双引号</em></strong></p><pre><code class="hljs plain">双引号-&quot;&quot;:在双引号中的字符，除了$,&quot;,&#96;和\以外的所有字符都解释成字符本身。</code></pre><p><strong><em>单引号</em></strong></p><pre><code class="hljs plain">单引号-&#39;&#39;:在单引号的所有特殊字符（如$,&quot;,&#96;和\）都失去了特殊意义，而成为普通字符。</code></pre><p><strong><em>反引号</em></strong></p><pre><code class="hljs plain">反引号-&#96;&#96;:在反引号中的字符被解释成命令，例如&#96;cmd&#96;都会被解释成cmd执行结果</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>shell复习1-命令执行顺序</title>
+    <link href="/2015/01/14/shell%E5%A4%8D%E4%B9%A01-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/"/>
+    <url>/2015/01/14/shell%E5%A4%8D%E4%B9%A01-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/</url>
+    
+    <content type="html"><![CDATA[<p>###顺序执行多个命令</p><pre><code class="hljs plain">$ echo hello shell;pwd;ls按照顺序执行命令，彼此不关联，无因果关系</code></pre><p>###有条件执行分为&amp;&amp;和||</p><p><strong><em>1、&amp;&amp;：连接两个命令，前一命令执行成功后才能执行后一个命令，相当于逻辑与</em></strong></p><p><strong><em>2、||：连接俩个命令，前一命令执行不成功才执行后一个命令，相当于逻辑或</em></strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shell</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>nginx反向代理oracle数据库</title>
+    <link href="/2014/12/30/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86oracle%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    <url>/2014/12/30/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86oracle%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    
+    <content type="html"><![CDATA[<p>##引言<br>旧的四台服务器访问10.xx.xx.25数据库服务器速度很快，无延迟，无掉包现象，而新添加的几台服务器访问48数据库速度很慢，经常性掉包（检测端口开启访问正常，防火墙正常，初步断定就是网络路由的问题？！），导致无法启动一些需要访问oracle数据库的应用，但是新的几台服务器访问老的几台服务器很快，查询了资料，可以通过反向代理的方式去在新的服务器去访问数据库服务器，方法如下：</p><ul><li><p>旧的服务器通过ssh代理端口映射，新的服务器通过访问旧的服务器来访问数据库服务器</p></li><li><p>旧的服务器通过旧服务器nginx的tcp代理插件进行反向代理访问数据库</p></li></ul><p>经过测试ssh代理端口映射ssh -L1521:10.xx.xx.48:1521 <a href="mailto:oracle@10.xx.xx.115">oracle@10.xx.xx.115</a>,经过测试无法完成所需要的需求，暂时先pass<br>所以目前只剩下第二种解决方案，特此记录下过程。</p><p>###一、下载所需软件</p><p>nginx目前最新稳定版本是1.6.2，所以下载最新的1.6.2版本</p><p>下载nginx的tcp插件</p><pre><code class="hljs plain">https:&#x2F;&#x2F;codeload.github.com&#x2F;yaoweibin&#x2F;nginx_tcp_proxy_module&#x2F;zip&#x2F;master</code></pre><p>nginx解压到/tmp文件夹，tcp插件解压到nginx解压的文件夹</p><p>###二、编译安装nginx和tcp插件</p><pre><code class="hljs plain">$ tar zxvf nginx-1.6.2.tar.gz$ cd nginx-1.6.2$ .&#x2F;configure --add-module&#x3D;&#x2F;tmp&#x2F;nginx1.6.2&#x2F;nginx_tcp_proxy_module$ make$ make install</code></pre><p>###三、测试nginx运行状态</p><pre><code class="hljs plain">启动nginx$ &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin&#x2F;nginx测试nginx是否启动$ ps aux | grep nginx测试启动完成进行下一步</code></pre><p>###四、修改nginx配置添加oracle服务器的tcp反向代理</p><pre><code class="hljs plain">进入到&#x2F;usr&#x2F;local&#x2F;nginx&#x2F;conf目录编辑nginx.conf添加如下配置tcp &#123;    upstream oracle &#123;        server 10.xx.xx.48:1521;        check interval&#x3D;3000 rise&#x3D;2 fall&#x3D;5 timeout&#x3D;1000;    &#125;    server &#123;        listen 1521;        proxy_pass oracle;    &#125;&#125;</code></pre><p>此时会出现一个问题，tcp连接会中断掉线，因为服务端关闭时候，客户端不可能马上就关闭，这是就需要添加保持连接配置，修改参数如下</p><pre><code class="hljs plain">tcp &#123;    timeout 1d;    proxy_read_timeout 10d;    proxy_send_timeout 10d;    proxy_connect_timeout 30;    upstream oracle &#123;        server 10.xx.xx.48:1521;        check interval&#x3D;3000 rise&#x3D;2 fall&#x3D;5 timeout&#x3D;1000;    &#125;    server &#123;        listen 1521;        proxy_pass oracle;        so_keepalive on;        tcp_nodelay on;    &#125;&#125;</code></pre><p>此时就可以通过代理服务器的1521端口去访问目标数据库了,即新的服务器如果需要访问10.xx.xx.48数据库，只需要配置老服务器服务配置10.xx.xx.115:1521进行访问。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>nginx</tag>
+      
+      <tag>oracle</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Mac搭建Ruby环境</title>
+    <link href="/2014/12/29/Mac%E6%90%AD%E5%BB%BARuby%E7%8E%AF%E5%A2%83/"/>
+    <url>/2014/12/29/Mac%E6%90%AD%E5%BB%BARuby%E7%8E%AF%E5%A2%83/</url>
+    
+    <content type="html"><![CDATA[<h2 id="安装系统需要的包"><a href="#安装系统需要的包" class="headerlink" title="安装系统需要的包"></a>安装系统需要的包</h2><pre><code class="hljs plain">$ ruby -e &quot;$(curl -fsSL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;Homebrew&#x2F;install&#x2F;master&#x2F;install)&quot;</code></pre><h2 id="安装RVM"><a href="#安装RVM" class="headerlink" title="安装RVM"></a>安装RVM</h2><pre><code class="hljs plain">$ curl -L https:&#x2F;&#x2F;get.rvm.io | bash -s stable载入 RVM 环境$ source ~&#x2F;.rvm&#x2F;scripts&#x2F;rvm检查一下是否安装正确$ rvm -v</code></pre><h2 id="用RVM安装Ruby环境"><a href="#用RVM安装Ruby环境" class="headerlink" title="用RVM安装Ruby环境"></a>用RVM安装Ruby环境</h2><pre><code class="hljs plain">目前最高最稳定版本是2.2.0$ rvm install 2.2.0</code></pre><h2 id="设置Ruby版本"><a href="#设置Ruby版本" class="headerlink" title="设置Ruby版本"></a>设置Ruby版本</h2><pre><code class="hljs plain">$ rvm 2.2.0 --default测试是否正确$ ruby -v$ gem -v$ gem source -r https:&#x2F;&#x2F;rubygems.org&#x2F;$ gem source -a https:&#x2F;&#x2F;ruby.taobao.org</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Ruby</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>IOS学习路线</title>
+    <link href="/2014/12/02/IOS%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"/>
+    <url>/2014/12/02/IOS%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/</url>
+    
+    <content type="html"><![CDATA[<p><strong>ios学习路线总流程图</strong></p><p><img src="https://www.flyada.com/images/ios%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.png" srcset="/img/loading.gif" alt="ios学习路线"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>学习路线</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何在centos6搭建shadowsockets</title>
+    <link href="/2014/11/30/%E5%A6%82%E4%BD%95%E5%9C%A8centos6%E6%90%AD%E5%BB%BAshadowsockets/"/>
+    <url>/2014/11/30/%E5%A6%82%E4%BD%95%E5%9C%A8centos6%E6%90%AD%E5%BB%BAshadowsockets/</url>
+    
+    <content type="html"><![CDATA[<p>###第一步</p><pre><code class="hljs plain"># yum install  openssl-devel</code></pre><p>###第二步</p><p>安装gcc,make等源码编译安装必要的工具</p><pre><code class="hljs plain">yum -y install gcc automake autoconf libtool makeyum -y install gcc gcc-c++yum -y  install git</code></pre><p>###第三步<br>下载ss源码包进行编译安装</p><pre><code class="hljs plain">git clone https:&#x2F;&#x2F;github.com&#x2F;madeye&#x2F;shadowsocks-libev.gitcd  shadowsocks-libev.&#x2F;configuremake  &amp;&amp; make install</code></pre><p>###第四步</p><pre><code class="hljs plain">nohup ss-server -s ipaddress -p port -k password -m aes-256-cfb &amp;</code></pre><p>说明：ipaddress是vps空间的ip地址，port是端口号，password是密码,-m后面是加密方式</p><p><strong>加入开机启动</strong></p><pre><code class="hljs plain">echo &quot;nohup ss-server -s ipaddress -p port -k password -m aes-256-cfb &amp;&quot; &gt;&gt; &#x2F;etc&#x2F;init.d</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>shadowsockets</tag>
+      
+      <tag>翻墙</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>android中ellipsize使用</title>
+    <link href="/2014/11/23/android%E4%B8%ADellipsize%E4%BD%BF%E7%94%A8/"/>
+    <url>/2014/11/23/android%E4%B8%ADellipsize%E4%BD%BF%E7%94%A8/</url>
+    
+    <content type="html"><![CDATA[<p>TextView文本过长的情况,使用ellipsize属性即可内容过长的情况自动加省略号</p><p>##用法如下</p><p><strong>再xml中使用ellipsize属性</strong></p><ul><li>android:ellipsize = “end” 省略号在结尾</li><li>android:ellipsize = “start” 省略号在开头</li><li>android:ellipsize = “middle” 省略号再中间</li><li>android:ellipsize = “marquee” 跑马灯</li></ul><p>最好加一个约束android:singleline = “true”</p><p><strong>在代码中使用</strong></p><ul><li><p>tv.setElipsize(TextUtils.TruncateAt.valueOf(“END”));</p></li><li><p>tv.setElipsize(TextUtils.TruncateAt.valueOf(“START”));</p></li><li><p>tv.setElipsize(TextUtils.TruncateAt.valueOf(“MIDDLE”));</p></li><li><p>tv.setElipsize(TextUtils.TruncateAt.valueOf(“MARQUEE”));</p><p>当然最好加一个约束tv.setSingleLine(true);</p><p>edit同样支持该属性，只是不支持marquee属性</p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ellipsize</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Fragment生命周期</title>
+    <link href="/2014/11/23/Fragment%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
+    <url>/2014/11/23/Fragment%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    
+    <content type="html"><![CDATA[<p>###Fragment生命周期<br><img src="http://yspe2371e4aa7697989.yunshipei.cn/dHlwZT1mdyZzaXplPTY0MCZzcmM9YUhSMGNDVXpRU1V5UmlVeVJtbHRaeTV0ZVM1amMyUnVMbTVsZENVeVJuVndiRzloWkhNbE1rWXlNREV5TVRFbE1rWXlPU1V5UmpFek5UUXhOekEyT1RsZk5qWXhPUzV3Ym1jPQ==" srcset="/img/loading.gif" alt="Fragment生命周期"></p><p>###与Activity生命周期对比<br><img src="http://yspe2371e4aa7697989.yunshipei.cn/dHlwZT1mdyZzaXplPTY0MCZzcmM9YUhSMGNDVXpRU1V5UmlVeVJtbHRaeTV0ZVM1amMyUnVMbTVsZENVeVJuVndiRzloWkhNbE1rWXlNREV5TVRFbE1rWXlPU1V5UmpFek5UUXhOekEyT0RKZk16Z3lOQzV3Ym1jPQ==" srcset="/img/loading.gif" alt="Activity生命周期"></p><p>###具体场景演示 :<br>切换到该Fragment</p><ul><li>onAttach</li><li>onCreate</li><li>onCreateView</li><li>onActivityCreated</li><li>onStart-onResume</li></ul><p>屏幕灭掉：</p><ul><li>onPause</li><li>onSaveInstanceState</li><li>onStop</li></ul><p>屏幕解锁</p><ul><li>onStart</li><li>onResume</li></ul><p>切换到其他Fragment:</p><ul><li>onPause</li><li>onStop</li><li>onDestroyView</li></ul><p>切换回本身的Fragment:</p><ul><li>onCreateView</li><li>onActivityCreated</li><li>onStart</li><li>onResume</li></ul><p>回到桌面</p><ul><li>onPause</li><li>onSaveInstanceState</li><li>onStop</li></ul><p>回到应用</p><ul><li>onStart</li><li>onResume</li></ul><p>退出应用</p><ul><li>onPause</li><li>onStop</li><li>onDestroyView</li><li>onDestroy</li><li>onDetach</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Fragment</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>2015春运抢票日历</title>
+    <link href="/2014/11/17/2015%E6%98%A5%E8%BF%90%E6%8A%A2%E7%A5%A8%E6%97%A5%E5%8E%86/"/>
+    <url>/2014/11/17/2015%E6%98%A5%E8%BF%90%E6%8A%A2%E7%A5%A8%E6%97%A5%E5%8E%86/</url>
+    
+    <content type="html"><![CDATA[<p>###春运抢票日历</p><p><img src="https://www.flyada.com/images/2015%E6%8A%A2%E7%A5%A8%E6%97%A5%E5%8E%86.jpg" srcset="/img/loading.gif" alt="抢票日历"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>个人</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>春运</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>NSPredicate谓词表达式语法</title>
+    <link href="/2014/11/07/NSPredicate%E8%B0%93%E8%AF%8D%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%AD%E6%B3%95/"/>
+    <url>/2014/11/07/NSPredicate%E8%B0%93%E8%AF%8D%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%AD%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<h3 id="基本比较运算符"><a href="#基本比较运算符" class="headerlink" title="基本比较运算符"></a>基本比较运算符</h3><ul><li>=、==：判断表达式是否相等.</li><li>‘&gt;=’、’=&gt;’：判断左边表达式的值是否大于或者等于右边表达式的值</li><li>‘&lt;=’、’=&lt;’：判断左边表达式的值是否小于或者等于右边表达式的值</li><li>‘&gt;’</li><li>‘&lt;’</li><li>!=、&lt;&gt;</li><li>BETWEEN：表达式必须满足“表达式BETWEEM{上限，下限}”的格式</li></ul><h3 id="基本逻辑运算符"><a href="#基本逻辑运算符" class="headerlink" title="基本逻辑运算符"></a>基本逻辑运算符</h3><ul><li>AND、&amp;&amp;：逻辑与，要求俩个表达式的值都为YES时，结果才是YES</li><li>OR、||：逻辑或，要求任何一个表达式的值为YES时，结果才为YES</li><li>NOT、!：逻辑非，用于对原有的表达式结果取反</li></ul><h3 id="字符串表达式"><a href="#字符串表达式" class="headerlink" title="字符串表达式"></a>字符串表达式</h3><ul><li>BEGINSWITH：检查某个字符串是否以指定的字串开头</li><li>ENDSWITH：检查某个字符串是否以指定的字串结尾</li><li>CONTAINS：检查某个字符串是否包含指定的字串</li><li>LIKE：检查某个字符串是否匹配指定的字符串模板，使用”?”和”*” （such as name like er?表示name是否包含以er开头的三位字母）</li><li>MATCHES：检查某个字符串是否匹配指定的正则表达式，虽然功能强大，但是执行效率也是最低的</li></ul><h3 id="操作运算符"><a href="#操作运算符" class="headerlink" title="操作运算符"></a>操作运算符</h3><ul><li>ANY、SOME：指定只要满足集合中任意元素满足条件即可返回YES。</li><li>ALL：指定要求集合中所有的元素满足条件才返回YES。</li><li>NONE：指定要求的集合中没有任何元素满足条件才返回YES</li><li>IN：该运算符等价于SQL语句的IN运算符</li><li>array[index]：返回array数组中index索引处的元素</li><li>array[FIRST]：返回array数组中的第一个元素</li><li>array[LAST]：返回array数组中的最后一个元素</li><li>array[SIZE]：返回array数组中的元素的个数</li></ul><h3 id="直接量"><a href="#直接量" class="headerlink" title="直接量"></a>直接量</h3><p>谓词表达式中使用双引号和单引号的效果是一样的，但是单引号只能用单引号结束，双引号只能用双引号结束</p><p>可以使用以下直接量</p><ul><li>FALSE、NO 代表逻辑假</li><li>TRUE、YES 代表逻辑真</li><li>NULL、NIL 代表一个空值</li><li>SELF 代表真在被判断的对象</li><li>“text”或者’text’ 代表字符串</li><li>数组：数组元素以英文逗号隔开。如{‘a’,’b’}</li><li>数值直接量，包括整数、小数和科学计数法形式</li><li>十六/八/二进制数值</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>iOS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Objective-C</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>yosemite开启HAXM硬件加速运行安卓虚拟机</title>
+    <link href="/2014/10/27/yosemite%E5%BC%80%E5%90%AFHAXM%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%BF%90%E8%A1%8C%E5%AE%89%E5%8D%93%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    <url>/2014/10/27/yosemite%E5%BC%80%E5%90%AFHAXM%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E8%BF%90%E8%A1%8C%E5%AE%89%E5%8D%93%E8%99%9A%E6%8B%9F%E6%9C%BA/</url>
+    
+    <content type="html"><![CDATA[<p>android sdk安装HAXM发现不能正常运行</p><pre><code class="hljs plain">$ kextstat | grep intel</code></pre><p>发现无进程运行</p><pre><code class="hljs plain">$ sudo kextload –b com.intel.kext.intelhaxm  &#x2F;Users&#x2F;Frank&#x2F;–b failed to load - (libkern&#x2F;kext) not found; check the system&#x2F;kernel logs for errors or try kextutil(8).  &#x2F;Users&#x2F;Frank&#x2F;com.intel.kext.intelhaxm failed to load - (libkern&#x2F;kext) not found; check the system&#x2F;kernel logs for errors or try kextutil(8).</code></pre><p>发现无法加载libkern/kext，其实是内核不支持未签名的kext</p><p>解决办法：</p><pre><code class="hljs plain">Run sudo nvram boot-args&#x3D;&quot;kext-dev-mode&#x3D;1&quot;Restart.Run sudo kextload -bundle-id com.intel.kext.intelhaxm</code></pre><p>NOTE: By running sudo</p><p> nvram boot-args=”kext-dev-mode=1” you will allow ALL UNSIGNED KEXT to be loaded. Know your system.</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>android</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>android</tag>
+      
+      <tag>intel</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

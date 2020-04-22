@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="我的个人技术博客">
+  <meta name="author" content="bullettrain1433">
+  <meta name="keywords" content="">
+  <title>群晖ds218+旁路由实战 - Just在路上</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.18.1/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_ijqayz9ro8k.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Just在路上</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              首页</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              归档</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              分类</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              标签</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2019-09-07 22:50">
+                    星期六, 九月 7日 2019, 10:50 晚上
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    1.4k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    15
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <blockquote>
+<p>迫于家里的华硕路由刷了梅林后，导致cpu经常爆90%到100%,经常性温度特别高，不得不隔断时间就要重启,非常影响体验，一气之下又刷回了官方固件，各种稳定，爽歪歪，代价也就没有了梅林的各种插件，少了不少便利。</p>
+</blockquote>
+<p>一直在网上找寻各种方案，得出以下三个方案</p>
+<ul>
+<li>方案一 换路由，上ac86u，配置足够满足需求，好心水，就是价格太贵网上反映好像还有断流现象</li>
+<li>方案二 上软路由，ROS+LEDE方案，优点是软路由稳定性配置还有定制性秒杀硬路由，缺点就是贵，发热也是问题，弱电箱能否放下也是问题</li>
+<li>方案三 旁路由解决方案，市面上常用的香橙派等体积小巧配置够用，发热功耗也还好，缺点就是不知道质量能否保证长期稳定运行</li>
+</ul>
+<p>思索再三，方案一迫于价格太贵，一直下不了手，方案二也是考虑价格以及后续问题没下手，就剩下方案三的方案了，香橙派倒是不贵，体积也小，但是弱电箱好像插座不够了，两个已插满，很是纠结。。。。</p>
+<p>这时候，坐上我的人体工程学椅子，45度仰天思考，群晖的三个小灯亮瞎我的24k金狗眼，对，群晖不是有vmm可以装lede，能否考虑下做个旁路由，满足家里需求，所以开干</p>
+<h3 id="第一步-下载镜像"><a href="#第一步-下载镜像" class="headerlink" title="第一步 下载镜像"></a>第一步 下载镜像</h3><p>前往 <a href="https://firmware.koolshare.cn/LEDE_X64_fw867/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BD%AC%E7%9B%98%E6%88%96PE%E4%B8%8B%E5%86%99%E7%9B%98%E4%B8%93%E7%94%A8/" target="_blank" rel="noopener">Koolshare LEDE x64 固件下载页</a> 中下载文件名包含 combined-squashfs 的固件，解压 gz 得到 img 文件。</p>
+<h3 id="第二步-配置vmm"><a href="#第二步-配置vmm" class="headerlink" title="第二步 配置vmm"></a>第二步 配置vmm</h3><p>群晖提供了一个虚拟机服务 Virtual Machine Manager（简称 VMM），系统中默认没有安装，需要去套件中心下载安装并启用。<br><img src="https://www.flyada.com/images/QQ20190908-002002.png" srcset="/img/loading.gif" alt="QQ20190908-002002"></p>
+<p>在群晖的管理界面中打开 VMM，点击左侧「存储」进入存储管理。点击「新增」，选择用于安装和存储虚拟机的硬盘。</p>
+<p>创建好存储以后在「VMM - 映像 - 新增」中上传之前解压出来的 img 文件。设置名称、选择从计算机上传。<img src="https://www.flyada.com/images/QQ20190908-002047.png" srcset="/img/loading.gif" alt="QQ20190908-002047"></p>
+<p> 上传成功以后可以看到上传的映像出现在列表中。</p>
+<p>在「VMM - 网络」中设置虚拟交换机。迫于我的ds218+只有一个千兆网口，所以 Default VM Network 默认就已经绑定在唯一的网口下面了。点击 Default VM Network，删除。然后点击「新增」开始创建新的虚拟交换机。<img src="https://www.flyada.com/images/QQ20190908-002924.png" srcset="/img/loading.gif" alt="QQ20190908-002924"></p>
+<p>现在 VMM 已经基本已经配置完毕，可以创建虚拟机了。</p>
+<h3 id="第三步-新建虚拟机"><a href="#第三步-新建虚拟机" class="headerlink" title="第三步 新建虚拟机"></a>第三步 新建虚拟机</h3><p>在「VMM - 虚拟机」中，在「新增」按钮边上的下拉菜单（那个三角尖）中选择「导入」，在导入方式中选择「从硬盘映像导入」，并找到刚才上传的映像。<img src="https://www.flyada.com/images/QQ20190908-002310.png" srcset="/img/loading.gif" alt="QQ20190908-002310"></p>
+<p>选择存储空间配置虚拟机规格，推荐 双核 + 2G 内存（迫于我的加了4g内存，现在6g内存绰绰有余），显卡就用默认配置就行了。<img src="https://www.flyada.com/images/QQ20190908-002211.png" srcset="/img/loading.gif" alt="QQ20190908-002211"></p>
+<p>下一步是存储空间相关设置。通过硬盘映像导入的虚拟机强制使用 10G 硬盘，实际上是动态占用的，不用担心。<br><img src="https://www.flyada.com/images/QQ20190908-002328.png" srcset="/img/loading.gif" alt="QQ20190908-002328"></p>
+<p>网络，我之前只创建了一个虚拟交换机，所以这里已经添加好了唯一的虚拟交换机。如果你是多网口 NAS 做软路由、那么还要通过「+」添加之前创建的多个虚拟交换机。</p>
+<p>都确认完毕后，这个时候先不要选择自动启动，等后面配置完了再修改，这步<strong>很重要</strong><img src="https://www.flyada.com/images/QQ20190908-002448.png" srcset="/img/loading.gif" alt="QQ20190908-002448"></p>
+<h3 id="第四步-配置网络"><a href="#第四步-配置网络" class="headerlink" title="第四步 配置网络"></a>第四步 配置网络</h3><p>在「VMM - 虚拟机」中找到 Koolshare lede，点击「连接」进入。开机之后内核日志不再滚动（出现 br-lan: link is ready）以后按下回车，进入命令行。</p>
+<p>使用 vim /etc/config/network 进入接口编辑，修改 LAN 口配置。比如我的群晖接在我的主路由下面，网段是 192.168.1.1，我的 NAS 分配了 192.168.1.120，于是我给 Koolshare LEDE 分配了 192.168.1.200，子网掩码保持 255.255.255.0 不变，网卡是 NAS 唯一的网口 eth0 保持不变）。</p>
+<p>修改完以后使用 /etc/init.d/network restart 重启网卡以生效配置。当然你也可以用 reboot 达到相同的效果。</p>
+<h3 id="第五步-配置LEDE"><a href="#第五步-配置LEDE" class="headerlink" title="第五步 配置LEDE"></a>第五步 配置LEDE</h3><p>如果上面配置顺利，这时候直接在网站输入192.168.1.200就能进入LEDE管理界面<br><img src="https://www.flyada.com/images/QQ20190908-004118.png" srcset="/img/loading.gif" alt="QQ20190908-004118"></p>
+<p>默认的密码是koolshare,登录进入可以修改密码<br><img src="https://www.flyada.com/images/QQ20190908-004219.png" srcset="/img/loading.gif" alt="QQ20190908-004219"></p>
+<p>第一次网口状态并不是全双工，显示半双工<br>需要关闭LEDE，在网络设置里选择1000那个选项，在重启下LEDE，就可以看到全双工了</p>
+<p>这时候可以在酷软商店下载各种插件使用了<br><img src="https://www.flyada.com/images/QQ20190908-004312.png" srcset="/img/loading.gif" alt="QQ20190908-004312"></p>
+<p>酷软下架的一些插件可以在<a href="https://github.com/hq450/fancyss_history_package/tree/master/fancyss_X64" target="_blank" rel="noopener">这里取</a>，然后离线安装</p>
+<blockquote>
+<p>2019年9月8日添加</p>
+</blockquote>
+<p>因为是旁路由，删除相关wan口</p>
+<p><img src="https://www.flyada.com/images/WX20190908-131303.png" srcset="/img/loading.gif" alt="WX20190908-131303"></p>
+<p>lan口配置如下</p>
+<p><img src="https://www.flyada.com/images/WX20190908-131426.png" srcset="/img/loading.gif" alt="WX20190908-131341"></p>
+<p>为了确保旁路由的ip不变，主路由给dhcp固定下旁路由的mac绑定的ip不变，我的主路由是华硕的路由，所以我的设置如下，手动指定了旁路由的ip地址</p>
+<p><img src="https://www.flyada.com/images/WX20190909-221447.png" srcset="/img/loading.gif" alt="WX20190909-221447">到达此部，旁路由配置基本就结束了</p>
+<p>此时在主路由上网关改成192.168.1.200，就能全网使用旁路由的LEDE插件了，此时可以自行摸索了</p>
+<p>哈哈😄，终于可以放心稳定了解决了家里网络的所有稳定。</p>
+<p>因为操作之前也参考了一些文章</p>
+<p>参考文章</p>
+<ul>
+<li><a href="https://blog.skk.moe/post/nas-dsm-vmm-lede/" target="_blank" rel="noopener">Sukka’s Blog</a></li>
+<li><a href="https://www.jinbo123.com/7423.html" target="_blank" rel="noopener">佐仔志</a></li>
+</ul>
+<p>特此感谢作者</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%B8%AA%E4%BA%BA/">个人</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BE%A4%E6%99%96/">群晖</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%97%81%E8%B7%AF%E7%94%B1/">旁路由</a>
+                    
+                      <a class="hover-with-bg" href="/tags/LEDE/">LEDE</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/04/20/%E6%8B%A5%E6%8A%B1flutter%E4%B9%8Bflutter%E6%80%BB%E7%9F%A5%E8%AF%86%E7%82%B9/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">拥抱Flutter之Flutter总知识点</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2018/11/20/Git%E6%92%A4%E9%94%80%E6%9C%AA%E6%8F%90%E4%BA%A4%E7%9A%84commit%E6%93%8D%E4%BD%9C/">
+                        <span class="hidden-mobile">Git撤销未提交的commit操作</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.4/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "V11S2uoaiSwMEOxsYoj2k4oO-gzGzoHsz",
+        app_key: "2quUPCFkFpUDMKBO9ODCKxLJ",
+        placeholder: "说点什么",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["nick","mail","link"],
+        pageSize: "10",
+        lang: "zh-CN",
+        highlight: true,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+  <!-- 备案信息 -->
+  <div>
+    <a href="http://beian.miit.gov.cn/" target="_blank" class="beian-icp"
+       rel="nofollow noopener">皖ICP备19012602号-1</a>
+    
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+        rel="nofollow noopener"
+        class="beian-police"
+        target="_blank"
+      >
+        <span class="beian-police-sep">&nbsp;|&nbsp;</span>
+        
+          <img src="/img/police_beian.png" srcset="/img/loading.gif" alt="police-icon" />
+        
+        <span>皖ICP备19012602号</span>
+      </a>
+     
+  </div>
+
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?38bdefbccaf592f43adb8787522107e2";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "群晖ds218+旁路由实战&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

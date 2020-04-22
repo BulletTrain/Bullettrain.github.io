@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="我的个人技术博客">
+  <meta name="author" content="bullettrain1433">
+  <meta name="keywords" content="">
+  <title>shell复习7-gawk与sed(2) - Just在路上</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.18.1/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_ijqayz9ro8k.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Just在路上</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              首页</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              归档</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              分类</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              标签</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2015-01-20 14:15">
+                    星期二, 一月 20日 2015, 2:15 下午
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    1.2k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    16
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>##gawk编程设计</p>
+<p>###函数</p>
+<ul>
+<li>length(str)  返回str的字符个数</li>
+<li>int(num) 返回num的整数部分</li>
+<li>index(str1,str2) 返回str2在str1中的位置，如果str2不存在则返回0</li>
+<li>split(str,arr,del) 用del作为定界符，将str的元素放到数组arr[1]…arr[n]中，返回数组元素个数</li>
+<li>sprintf(fmt,args) 根据fmt格式化args并返回格式化后的字符串，模范c语言同名函数</li>
+<li>substr(str,pos,len) 返回str中从pos开始的长度为len个字符的字符串</li>
+<li>tolower(str) 返回str的副本，且其中所有大写字母换成相应的小写字母</li>
+<li>toupper(str) 返回str的副本，且其中的所有小写字母换成相应的大写字母</li>
+</ul>
+<p>###关联数组</p>
+<p>关联数组是gawk最强大功能之一，关联数组使用字符串作为索引，在使用关联数组时候，用户可以用数值字符串作为索引来模仿系统的数字索引数组。</p>
+<p>用户可以像某个值指派给任何其他awk变量一样，语法如下</p>
+<pre><code class="hljs plain">array[string] &#x3D;value
+array为数组的名称，string为用户将要赋值的元素在数组中的索引，value为将指派给该元素的值</code></pre>
+<p>可以将特殊的for结构用于关联数组，语法如下</p>
+<pre><code class="hljs plain">for (elem in array) action</code></pre>
+<p>for结构将遍历数组中的元素，elem表示数组中每个元素的值，array为数组名称，action为awk对数组中每个元素所采取的动作。可以在action中使用elem变量。</p>
+<p>例如：</p>
+<pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> vim arrayexample</span>
+<span class="hljs-meta">#</span><span class="bash">filename:arrayexample</span>
+awk '&#123;name[$1]=$5&#125;END&#123;for(elem in name)print elem" 的成绩为:" name[elem]&#125;' example
+
+<span class="hljs-meta">$</span><span class="bash"> chmod u+x arrayexample</span>
+<span class="hljs-meta">$</span><span class="bash"> ./arrayexample</span>
+xuxin 的成绩为:90
+lisi 的成绩为:99
+xuxing 的成绩为:81
+liskai 的成绩为:78
+lichang 的成绩为:99
+wangxuebing 的成绩为:94
+zhangsansan 的成绩为:88
+wanglijiang 的成绩为:78
+zhangsan 的成绩为:83
+langxuebing 的成绩为:86</code></pre>
+
+<p>###格式化输出命令<br>使用printf代替print控制awk产生的输出。<br>printf “control-string”,arg1,arg2,…,argn</p>
+<ul>
+<li>d 十进制</li>
+<li>e 指数表示</li>
+<li>f 浮点数字</li>
+<li>g 使用f或者e中较短的一个</li>
+<li>o 无符号八进制</li>
+<li>s 字符串</li>
+<li>x 无符号十六进制</li>
+</ul>
+<p>###关系运算符</p>
+<pre><code class="hljs plain">&lt;、&lt;&#x3D;、&#x3D;&#x3D;、!&#x3D;、&gt;&#x3D;、&gt;</code></pre>
+<p>###算数运算符</p>
+<pre><code class="hljs plain">*、&#x2F;、%、+、-、&#x3D;、++、--、+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、%&#x3D;</code></pre>
+<p>例子</p>
+<pre><code class="hljs plain">$ vim report
+#!&#x2F;bin&#x2F;bash
+#filename:report
+if [ $# &#x3D;&#x3D; 0 ]
+
+then
+   echo &quot;必须指定一个数据文件&quot;
+   exit 1
+fi
+(date;cat $1)|
+
+awk &#39;
+  BEGIN&#123;total&#x3D;0&#125;
+  NR &#x3D;&#x3D; 1 &#123;print &quot;统计时间:&quot;,$2,$3&quot;,&quot;$6;print &quot;--------------&quot;&#125;
+  NR &gt; 1 &#123;print $1 &quot;:&quot; $5;total+&#x3D;$5&#125;
+  END &#123;print &quot;--------------&quot;;printf &quot;平均分为: %4.2f\n&quot;,total&#x2F;(NR-1)&#125;
+  &#39;
+$ chmod u+x report
+$ .&#x2F;report
+必须指定一个数据文件
+
+$ .&#x2F;report example
+统计时间: 1月21日 星期三,
+--------------
+lichang:99
+wanglijiang:78
+zhangsansan:88
+langxuebing:86
+liskai:78
+zhangsan:83
+lisi:99
+wanglijiang:78
+xuxing:81
+xuxin:90
+wangxuebing:94
+--------------
+平均分为: 86.73</code></pre>
+
+<p>###流程控制语句</p>
+<ul>
+<li>if…else结构</li>
+</ul>
+<pre><code class="hljs plain">$ vim ifelse
+#filename:ifelse
+BEGIN&#123;
+      name&#x3D;&quot;John&quot;
+      if( name &#x3D;&#x3D; &quot;zhangsan&quot; )
+         print &quot; name is zhangsan&quot;
+      else
+         print &quot; name is not zhangsan, it is&quot;,name
+&#125;
+
+$ awk -f ifelse
+ name is not zhangsan, it is John</code></pre>
+
+<ul>
+<li>while循环结构</li>
+</ul>
+<pre><code class="hljs plain">$ vim while1
+#filename:while1
+BEGIN&#123;
+   n &#x3D; 2
+   while( n &lt;&#x3D; 9 )
+   &#123;
+      print &quot;2^&quot; n&quot;&#x3D;&quot;,2**n
+      n++
+   &#125;
+&#125;
+
+$ awk -f while1
+2^2&#x3D; 4
+2^3&#x3D; 8
+2^4&#x3D; 16
+2^5&#x3D; 32
+2^6&#x3D; 64
+2^7&#x3D; 128
+2^8&#x3D; 256
+2^9&#x3D; 512</code></pre>
+
+<ul>
+<li>for循环结构</li>
+</ul>
+<pre><code class="hljs plain">$ vim for1
+#filename:for1
+BEGIN &#123;
+      for(n&#x3D;2;n&lt;&#x3D;9;n++)
+         print &quot;2^&quot; n&quot;&#x3D;&quot;,2**n
+&#125;
+
+$ awk -f for1
+2^2&#x3D; 4
+2^3&#x3D; 8
+2^4&#x3D; 16
+2^5&#x3D; 32
+2^6&#x3D; 64
+2^7&#x3D; 128
+2^8&#x3D; 256
+2^9&#x3D; 512</code></pre>
+
+<ul>
+<li>break</li>
+<li>continue</li>
+</ul>
+<p>###getline:控制输出</p>
+<p>例子</p>
+<pre><code class="hljs plain">$ vim gline
+BEGIN&#123;
+      while( getline LINE )
+      &#123; 
+         print NR&quot;: &quot;LINE
+      &#125;
+&#125;
+
+$ vim testdate
+1111111
+2222222
+3333333
+4444444
+
+$ awk -f gline &lt; testdate
+1: 1111111
+2: 2222222
+3: 3333333
+4: 4444444</code></pre>
+
+<p>###协进程<br>协进程是指与另一个进程并行的进程。gawk从版本3.1开始就可以通过协进程方式直接与某个后台进程进行信息交换<br>gawk通过在程序名称前面添加双向管道运算符|&amp;来标识在后台运行的协进程</p>
+<p>###网络数据交换<br>gawk可以通过IP网络连接到另一个系统上的某个进程进行信息交换。当用户指定了某个以/inet/开头的特殊文件的格式如下。<br>/inet/protocol/local-port/remote-host/remote-port<br>其中的protocol通常为TCP也可以为UDP。local-port表示为本地端口，如果用户希望让gawk选择一个端口，也可以将local-port设置为0。remote-host为远程主机的IP地址或域名，remote-port表示远程端口号，可以指定http也可以指定ftp地址。</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/linux/">linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/shell/">shell</a>
+                    
+                      <a class="hover-with-bg" href="/tags/sed/">sed</a>
+                    
+                      <a class="hover-with-bg" href="/tags/awk/">awk</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2015/01/21/shell%E5%A4%8D%E4%B9%A08-gawk%E4%B8%8Esed-3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">shell复习8-gawk与sed(3)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2015/01/15/linux%E6%89%A9%E5%B1%95%E6%A0%B9%E5%88%86%E5%8C%BA/">
+                        <span class="hidden-mobile">linux扩展根分区</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.4/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "V11S2uoaiSwMEOxsYoj2k4oO-gzGzoHsz",
+        app_key: "2quUPCFkFpUDMKBO9ODCKxLJ",
+        placeholder: "说点什么",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["nick","mail","link"],
+        pageSize: "10",
+        lang: "zh-CN",
+        highlight: true,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+  <!-- 备案信息 -->
+  <div>
+    <a href="http://beian.miit.gov.cn/" target="_blank" class="beian-icp"
+       rel="nofollow noopener">皖ICP备19012602号-1</a>
+    
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+        rel="nofollow noopener"
+        class="beian-police"
+        target="_blank"
+      >
+        <span class="beian-police-sep">&nbsp;|&nbsp;</span>
+        
+          <img src="/img/police_beian.png" srcset="/img/loading.gif" alt="police-icon" />
+        
+        <span>皖ICP备19012602号</span>
+      </a>
+     
+  </div>
+
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?38bdefbccaf592f43adb8787522107e2";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "shell复习7-gawk与sed(2)&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="我的个人技术博客">
+  <meta name="author" content="bullettrain1433">
+  <meta name="keywords" content="">
+  <title>ubuntu14.04 Docker实战 - Just在路上</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.18.1/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_ijqayz9ro8k.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Just在路上</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              首页</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              归档</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              分类</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              标签</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2015-04-20 15:50">
+                    星期一, 四月 20日 2015, 3:50 下午
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    1.1k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    16
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>参考自<a href="https://www.docker.com/" target="_blank" rel="noopener">docker官网</a><br>##安装docker<br>确认wget已经安装</p>
+<p>如未安装请使用如下命令安装</p>
+<pre><code class="hljs plain">$ sudo apt-get update $ sudo apt-get install wget</code></pre>
+
+<p>安装docker</p>
+<pre><code class="hljs plain">$ wget -qO- https:&#x2F;&#x2F;get.docker.com&#x2F; | sh</code></pre>
+
+<p>确认是否安装完毕</p>
+<pre><code class="hljs plain">$ sudo docker run hello-world</code></pre>
+
+<p>##docker基本命令使用</p>
+<p>使用如下命令获取需要的docker镜像</p>
+<p><code>$ sudo docker pull ubuntu:14.04</code></p>
+<p>或者搜索docker容器</p>
+<pre><code class="hljs plain">$ sudo docker search ubuntu
+NAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+ubuntu                           Official Ubuntu base image                      1585      [OK]
+ansible&#x2F;ubuntu14.04-ansible      Ubuntu 14.04 LTS with ansible                   49                   [OK]
+ubuntu-upstart                   Upstart is an event-based replacement for ...   25        [OK]
+torusware&#x2F;speedus-ubuntu         Always updated official Ubuntu docker imag...   24                   [OK]
+tutum&#x2F;ubuntu                     Ubuntu image with SSH access. For the root...   22                   [OK]
+sequenceiq&#x2F;hadoop-ubuntu         An easy way to try Hadoop on Ubuntu             14                   [OK]
+dorowu&#x2F;ubuntu-desktop-lxde-vnc   Ubuntu with openssh-server and NoVNC on po...   11                   [OK]
+guilhem&#x2F;vagrant-ubuntu                                                           9                    [OK]
+ubuntu-debootstrap               debootstrap --variant&#x3D;minbase --components...   7         [OK]
+......</code></pre>
+
+<p>运行docker容器并且进入docker容器的命令行</p>
+<pre><code class="hljs plain">$ sudo docker run -t -i ubuntu:14.04 &#x2F;bin&#x2F;bash</code></pre>
+
+<p>查看正在运行的docker容器 </p>
+<pre><code class="hljs plain">$ sudo docker ps
+CONTAINER ID  IMAGE         COMMAND               CREATED        STATUS       PORTS NAMES
+1e5535038e28  ubuntu:14.04  &#x2F;bin&#x2F;sh -c &#39;while tr  2 minutes ago  Up 1 minute        insane_babbage</code></pre>
+
+<p>其他docker命令可使用如下命令进行查询</p>
+<pre><code class="hljs plain">$ sudo docker
+Usage: docker [OPTIONS] COMMAND [arg...]
+
+A self-sufficient runtime for linux containers.
+
+Options:
+  --api-cors-header&#x3D;                   Set CORS headers in the remote API
+  -b, --bridge&#x3D;                        Attach containers to a network bridge
+  --bip&#x3D;                               Specify network bridge IP
+  -D, --debug&#x3D;false                    Enable debug mode
+  -d, --daemon&#x3D;false                   Enable daemon mode
+  ......</code></pre>
+
+<p>##创建自己的docker images并且导出</p>
+<p>###运行下载好的docker images</p>
+<pre><code class="hljs plain">$ sudo docker run -t -i ubuntu:14.04 &#x2F;bin&#x2F;bash
+root@92e3aeb08f18:&#x2F;#</code></pre>
+<p>###docker镜像操作</p>
+<p>例如</p>
+<pre><code class="hljs plain">root@92e3aeb08f18:&#x2F;#apt-get install ant</code></pre>
+<p>等待安装完毕</p>
+<p>使用docker commit进行保存操作</p>
+<pre><code class="hljs plain">root@92e3aeb08f18:&#x2F;#exit
+$ sudo docker commit -m &quot;add ant&quot; -a &quot;ruisu&quot;  92e3aeb08f18 ubuntu:14.04b
+45c7b4118ce4da89bf1e8f9a52ac2e701b4de8546bfba790cb10fe847ed3c4fb</code></pre>
+<p> 使用如下命令便会看到本地images多了一个叫ubuntu:14.04b的docker images</p>
+<pre><code class="hljs plain">$ sudo docker images</code></pre>
+
+<p>如果已经注册docker hub账户可以直接push images到云端</p>
+<pre><code class="hljs plain">$ sudo docker push ubuntu:14.04b</code></pre>
+
+<p>##配置docker私有库</p>
+<p>上传仓库的导出文件xx.tar.gz到服务器的任意目录,这里上传到根目录</p>
+<p>加载仓库镜像 </p>
+<pre><code class="hljs plain"># cd &#x2F;
+# docker load &lt; xx.tar.gz</code></pre>
+
+<p>查看导入的仓库镜像</p>
+<pre><code class="hljs plain"># docker images</code></pre>
+
+<p>启动仓库容器</p>
+<pre><code class="hljs plain"># docker run -it --name&#x3D;xx --net&#x3D;host --restart&#x3D;always --privileged&#x3D;true xx</code></pre>
+
+<p>查看启动的仓库容器</p>
+<pre><code class="hljs plain"># docker ps -a</code></pre>
+
+<p>##docker常用操作</p>
+<p>###镜像导入</p>
+<ul>
+<li>load方式导入镜像</li>
+</ul>
+<pre><code class="hljs plain">用法:docker load &lt; 导入的文件名称
+示例:docker load &lt; nginx_v1.0.tar.gz 在服务器上加载镜像</code></pre>
+<ul>
+<li>import导入镜像文件</li>
+</ul>
+<pre><code class="hljs plain">用法:cat 文件名称 | docker import - [REPOSITORY][:tag]
+示例: nginx_v1.0.tar.gz | docker import - 导入不打tag的镜像
+示例: nginx_v1.0.tar.gz | docker import - 192.168.83.107:5000&#x2F;nginx:v1 导入打tag的镜像
+镜像更改</code></pre>
+
+<ul>
+<li>修改镜像tag</li>
+</ul>
+<pre><code class="hljs plain">用法:docker tag 镜像ID REPOSITORY:tag 示例:docker tag d6 192.168.83.107:5000&#x2F;nginx:v1</code></pre>
+
+<ul>
+<li>删除镜像tag</li>
+</ul>
+<pre><code class="hljs plain">用法:docker rmi REPOSITORY:tag
+示例:docker rmi 192.168.83.107:5000&#x2F;nginx:v1
+容器</code></pre>
+
+<ul>
+<li>启动docker容器</li>
+</ul>
+<pre><code class="hljs plain">用法:docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+示例:docker run -it --name&#x3D;nginx --net&#x3D;host --privileged&#x3D;true --restart&#x3D;always 192.168.83.107:5000&#x2F;nginx:v1 
+启动容器 
+示例:docker run -it --name&#x3D;nginx --net&#x3D;host --restart&#x3D;always --privileged&#x3D;true 192.168.83.107:5000&#x2F;nginx:v1 &#x2F;bin&#x2F;bash 以
+shell的方式启动容器 
+退出容器
+ctrl+p+q退出容器
+  以交互式方式登录容器后可以采用上述方式退出
+镜像上传下载</code></pre>
+
+<ul>
+<li>push镜像到仓库</li>
+</ul>
+<pre><code class="hljs plain">用法:docker push REPOSITORY:tag
+示例:docker push 192.168.83.107:5000&#x2F;nginx:v1 备注:在向私有仓库push镜像的时候需要在docker客户机器的docker文件中增加如下内容(标红内容):
+vi &#x2F;etc&#x2F;default&#x2F;docker
+DOCKER_OPTS&#x3D;&quot;--insecure-registry 192.168.83.107:5000&quot; &#x2F;&#x2F; DOCKER_OPTS&#x3D;&quot;--insecure-registry 仓库服务器地址:5000&quot; service docker restart &#x2F;&#x2F;重启docker服务生效</code></pre>
+
+<ul>
+<li>pull镜像到本地</li>
+</ul>
+<pre><code class="hljs plain">用法:docker pull REPOSITORY:tag
+示例:docker pull 192.168.83.107:5000&#x2F;nginx:v1
+镜像导出</code></pre>
+
+<ul>
+<li>save方式导出镜像</li>
+</ul>
+<pre><code class="hljs plain">用法:docker save -o 导出的文件名称 镜像ID 示例:docker save -o&#x3D;nginx_v1.0.tar.gz b8053ab2e5d3 备注:该导出方式导出的对象是镜像</code></pre>
+<ul>
+<li>export方式导出镜像</li>
+</ul>
+<pre><code class="hljs plain">用法:docker export 容器ID &gt; 导出的文件路径及导出的文件名称
+示例:docker export 8c71d5f9e436 &gt; .&#x2F;nginx_v1.0.tar.gz 备注:该导出方式导出的对象为容器,save方式导出的文件比export方式导出的文件小</code></pre>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/linux/">linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/docker/">docker</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2015/04/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8BDecorator-Pattern-%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">设计模式之Decorator Pattern(装饰模式)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2015/04/20/Ubuntu-14-04-LTS-%E6%BA%90/">
+                        <span class="hidden-mobile">Ubuntu 14.04 LTS 源</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.4/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "V11S2uoaiSwMEOxsYoj2k4oO-gzGzoHsz",
+        app_key: "2quUPCFkFpUDMKBO9ODCKxLJ",
+        placeholder: "说点什么",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["nick","mail","link"],
+        pageSize: "10",
+        lang: "zh-CN",
+        highlight: true,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+  <!-- 备案信息 -->
+  <div>
+    <a href="http://beian.miit.gov.cn/" target="_blank" class="beian-icp"
+       rel="nofollow noopener">皖ICP备19012602号-1</a>
+    
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+        rel="nofollow noopener"
+        class="beian-police"
+        target="_blank"
+      >
+        <span class="beian-police-sep">&nbsp;|&nbsp;</span>
+        
+          <img src="/img/police_beian.png" srcset="/img/loading.gif" alt="police-icon" />
+        
+        <span>皖ICP备19012602号</span>
+      </a>
+     
+  </div>
+
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?38bdefbccaf592f43adb8787522107e2";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "ubuntu14.04 Docker实战&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript">
+      //定义获取词语下标
+      var a_idx = 0;
+      jQuery(document).ready(function ($) {
+        //点击body时触发事件
+        $("body").click(function (e) {
+          //需要显示的词语
+          var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+          //设置词语给span标签
+          var $i = $("<span/>").text(a[a_idx]);
+          //下标等于原来下标+1  余 词语总数
+          a_idx = (a_idx + 1) % a.length;
+          //获取鼠标指针的位置，分别相对于文档的左和右边缘。
+          //获取x和y的指针坐标
+          var x = e.pageX, y = e.pageY;
+          //在鼠标的指针的位置给$i定义的span标签添加css样式
+          $i.css({
+            "z-index": 999,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rand_color()
+          });
+          // 随机颜色
+          function rand_color() {
+            return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+          }
+          //在body添加这个标签
+          $("body").append($i);
+          //animate() 方法执行 CSS 属性集的自定义动画。
+          //该方法通过CSS样式将元素从一个状态改变为另一个状态。CSS属性值是逐渐改变的，这样就可以创建动画效果。
+          //详情请看http://www.w3school.com.cn/jquery/effect_animate.asp
+          $i.animate({
+            //将原来的位置向上移动180
+            "top": y - 180,
+            "opacity": 0
+            //1500动画的速度
+          }, 1500, function () {
+            //时间到了自动删除
+            $i.remove();
+          });
+        });
+      })
+      ;
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
