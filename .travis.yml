@@ -4,9 +4,9 @@ node_js: stable
 before_install:
 - export TZ='Asia/Shanghai'  
 - npm install -g hexo
-- npm install -- save-dev hexo-util
-- npm install -- save-dev hexo-fs
-- npm install -- save-dev hexo-deployer-git
+#- npm install -- save-dev hexo-util
+#- npm install -- save-dev hexo-fs
+#- npm install -- save-dev hexo-deployer-git
 before_script:
 - git config --global user.name 'bullettrain1433'
 - git config --global user.email 'bullettrain1433@gmail.com'
@@ -17,20 +17,21 @@ install:
 script:
 - hexo clean
 - hexo generate
-after_success:
 - hexo deploy
+#after_success:
+#- hexo deploy
 
 #before_script:
  # - npm install -g gulp
 
-after_script:
-  - cd ./public
-  - git init
-  - git config user.name "bullettrain1433"
-  - git config user.email "bullettrain1433@gmail.com"
-  - git add .
-  - git commit -m "Update docs"
-  - git push --force --quiet "https://${githubblog}@${GH_REF}" master:master
+#after_script:
+#  - cd ./public
+#  - git init
+#  - git config user.name "bullettrain1433"
+#  - git config user.email "bullettrain1433@gmail.com"
+#  - git add .
+#  - git commit -m "Update docs"
+#  - git push --force --quiet "https://${githubblog}@${GH_REF}" master:master
 
 branches:
   only:
