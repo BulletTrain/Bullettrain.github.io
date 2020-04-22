@@ -6,19 +6,19 @@ cache:
     - node_modules
 
 before_install:
-- export TZ='Asia/Shanghai'  
-- npm install -g hexo
+  - npm install -g hexo-cli
 
 before_script:
-- git config --global user.name 'bullettrain1433'
-- git config --global user.email 'bullettrain1433@gmail.com'
+  - git config --global user.name 'bullettrain1433'
+  - git config --global user.email 'bullettrain1433@gmail.com'
 
 install:
-- npm install
+  - npm install
+  - npm install hexo-deployer-git --save
 
 script:
-- hexo clean
-- hexo generate
+  - hexo clean
+  - hexo generate
 
 after_script:
   - sed -i "s/gh_token/${githubblog}/g" ./_config.yml
