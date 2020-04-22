@@ -1,37 +1,29 @@
 language: node_js
 node_js: stable
 
+cache:
+  directories:
+    - node_modules
+
 before_install:
 - export TZ='Asia/Shanghai'  
 - npm install -g hexo
-#- npm install -- save-dev hexo-util
-#- npm install -- save-dev hexo-fs
-#- npm install -- save-dev hexo-deployer-git
+
 before_script:
 - git config --global user.name 'bullettrain1433'
 - git config --global user.email 'bullettrain1433@gmail.com'
-- sed -i'' "s~git@github.com:BulletTrain/Bullettrain.github.io.git~https://${githubblog}:x-oauth-basic@github.com/BulletTrain/Bullettrain.github.io.git~" _config.yml
-# S: Build Lifecycle
+
 install:
 - npm install
+
 script:
 - hexo clean
 - hexo generate
-- hexo deploy
-#after_success:
-#- hexo deploy
 
-#before_script:
- # - npm install -g gulp
-
-# after_script:
-#   - cd ./public
-#   - git init
-#   - git config user.name "bullettrain1433"
-#   - git config user.email "bullettrain1433@gmail.com"
-#   - git add .
-#   - git commit -m "Update docs"
-#   - git push --force --quiet "https://${githubblog}@${GH_REF}" master:master
+after_script:
+  - sed -i "s/gh_token/${githubblog}/g" ./_config.yml
+  # token_name 为上一步中Travis环境变量中设置的name
+  - hexo deploy
 
 branches:
   only:
