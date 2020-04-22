@@ -87,8 +87,6 @@ deploy:
     repository: git@github.com:BulletTrain/Bullettrain.github.io.git
     branch: master
 
-  - type: leancloud_counter_security_sync
-
 
 
 # =============================================================================
