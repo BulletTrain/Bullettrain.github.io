@@ -6,6 +6,7 @@ before_install:
 - npm install -g hexo
 - npm install -- save-dev hexo-util
 - npm install -- save-dev hexo-fs
+- npm install -- save-dev hexo-deployer-git
 before_script:
 - git config --global user.name 'bullettrain1433'
 - git config --global user.email 'bullettrain1433@gmail.com'
