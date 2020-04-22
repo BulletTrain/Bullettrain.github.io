@@ -1,10 +1,11 @@
+---
 title: shell复习6-gawk与sed
 date: 2015-01-15 11:08:38
 categories: linux
 tags: [shell,gawk,sed]
 copyright: true
-
 ---
+
 ##过滤器gawk(awk的GNU版本)
 gawk是可以完成模式扫描和数据处理的语言。gawk搜索一个或者多个文件，查找其中匹配模式的记录,通常为行，通过执行指定的动作来处理这些记录。gawk可以使用变量、函数、算数运算符、关系运算符、关系数组、控制语句和c语言的printf语句，而高级gawk编程可以利用getline语句输入数据，使用协作进程让gawk与其他程序进行数据交换，或者通过网络连接与运行在远程系统上的数据交换数据。
 

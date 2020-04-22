@@ -1,9 +1,9 @@
+---
 title: shell复习7-gawk与sed(2)
 date: 2015-01-20 14:15:53
 categories: linux
 tags: [shell,awk,sed]
 copyright: true
-
 ---
 
 ##gawk编程设计

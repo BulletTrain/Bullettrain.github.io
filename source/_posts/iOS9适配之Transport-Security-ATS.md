@@ -1,14 +1,10 @@
+---
 title: iOS9适配之Transport Security (ATS)
-
 date: 2015-09-17 15:15:57
-
 categories: iOS
-
 tags: [iOS9,ATS]
-
 copyright: true
-
-------
+---
 
 今早升级了Xcode7，重新打开了公司的项目，编译运行，发现模拟器和真机都不能联网，以为后台接口出问题，再搜索半天才发现iOS9以及Xcode7增加了App Transport Security，缩写即ATS
 

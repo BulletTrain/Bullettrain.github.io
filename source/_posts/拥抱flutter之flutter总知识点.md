@@ -1,14 +1,10 @@
+---
 title: 拥抱Flutter之Flutter总知识点
-
 date: 2020-04-20 20:53:54
-
 categories: Flutter
-
 tags: 学习路线
-
 copyright: true
-
-------
+---
 
 **Flutter大体知识总流程图**
 

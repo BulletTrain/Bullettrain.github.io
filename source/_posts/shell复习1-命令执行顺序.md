@@ -1,9 +1,9 @@
+---
 title: shell复习1-命令执行顺序
 date: 2015-01-14 16:13:43
 categories: linux
 tags: shell
 copyright: true
-
 ---
 
 ###顺序执行多个命令

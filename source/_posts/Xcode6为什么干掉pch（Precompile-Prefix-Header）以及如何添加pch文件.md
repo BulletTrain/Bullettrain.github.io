@@ -1,14 +1,10 @@
+---
 title: Xcode6为什么干掉pch（Precompile Prefix Header）以及如何添加pch文件
-
 date: 2015-03-24 14:43:14
-
 categories: iOS
-
 tags: [xcode6,pch]
-
 copyright: true
-
-------
+---
 
 一直在用xcode6开发，但发现下载的一些项目都是在xcode5上创建的，所以一直没注意到，xcode6竟然干掉pch文件了。
 

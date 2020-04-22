@@ -1,14 +1,10 @@
+---
 title: 设计模式之Builder Pattern(建造者模式)
-
 date: 2016-02-03 16:37:27
-
 categories: 设计模式
-
 tags: Builder Pattern
-
 copyright: true
-
-------
+---
 
 ## 简介
 

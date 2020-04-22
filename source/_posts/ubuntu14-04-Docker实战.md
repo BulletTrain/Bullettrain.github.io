@@ -1,10 +1,11 @@
+---
 title: ubuntu14.04 Docker实战
 date: 2015-04-20 15:50:20
 categories: linux
 tags: docker
 copyright: true
-
 ---
+
 参考自[docker官网](https://www.docker.com/)
 ##安装docker
 确认wget已经安装

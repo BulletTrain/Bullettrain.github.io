@@ -1,10 +1,11 @@
+---
 title: 设计模式之Proxy Pattern(代理模式)
 date: 2015-04-30 10:56:08
 categories: 设计模式
 tags: Proxy Pattern
 copyright: true
+---
 
-------
 ##简介
 给某一个对象提供一个代理，并由代理对象来完成对原对象的访问。代理模式是一种对象结构型模式。
 

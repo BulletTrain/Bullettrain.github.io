@@ -1,14 +1,10 @@
+---
 title: NSPredicate谓词表达式语法
-
 date: 2014-11-07 15:10:46
-
 categories: iOS
-
 tags: Objective-C
-
 copyright: true
-
-------
+---
 
 ### 基本比较运算符
 

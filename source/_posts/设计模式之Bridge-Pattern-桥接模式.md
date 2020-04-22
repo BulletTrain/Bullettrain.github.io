@@ -1,14 +1,10 @@
+---
 title: 设计模式之Bridge Pattern(桥接模式)
-
 date: 2015-04-30 08:59:53
-
 categories: 设计模式
-
 tags: Bridge Pattern
-
 copyright: true
-
-------
+---
 
 ## 简介
 

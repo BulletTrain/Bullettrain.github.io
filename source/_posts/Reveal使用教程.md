@@ -1,14 +1,10 @@
+---
 title: "Reveal使用教程"
-
 date: 2015-08-28 14:06:44
-
 categories: iOS
-
 tags: Reveal
-
 copyright: true
-
-------
+---
 
 打开Reveal
 

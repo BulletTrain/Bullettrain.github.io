@@ -1,10 +1,10 @@
+---
 title: iOS使用的一些函数
 date: 2016-08-03 15:52:30
 categories: iOS
 tags: [iOS,函数]
 copyright: true
-
-------
+---
 
 rand() ----随机数
 

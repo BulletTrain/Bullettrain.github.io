@@ -1,10 +1,11 @@
+---
 title: shell复习4-shell正则表达式
 date: 2015-01-14 16:14:31
 categories: linux
 tags: shell
 copyright: true
-
 ---
+
 ##字符集和类
 ###连字符表示一个字符范围
 

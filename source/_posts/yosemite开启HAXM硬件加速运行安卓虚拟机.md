@@ -1,14 +1,10 @@
+---
 title: yosemite开启HAXM硬件加速运行安卓虚拟机
-
 date: 2014-10-27 22:50:40
-
 categories: android
-
 tags: [android,intel]
-
 copyright: true
-
-------
+---
 
 android sdk安装HAXM发现不能正常运行
 

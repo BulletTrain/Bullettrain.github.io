@@ -1,10 +1,11 @@
+---
 title: mysql更改存储路径
 date: 2015-04-03 16:11:15
 categories: database
 tags: mysql
 copyright: true
-
 ---
+
 ###1、 关闭selinux
 ```
 vi /etc/selinux/config

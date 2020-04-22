@@ -1,14 +1,10 @@
+---
 title: 设计模式之Mediator Pattern(中介者模式)
-
 date: 2016-02-04 09:42:30
-
 categories: 设计模式
-
 tags: Mediator Pattern
-
 copyright: true
-
------
+---
 
 ## 概述
 

@@ -1,14 +1,10 @@
+---
 title: iOS10新的schemes跳转
-
 date: 2016-10-08 08:46:49
-
 categories: iOS
-
 tags: [schemes,iOS10]
-
 copyright: true
-
-------
+---
 
 - `电池电量` Prefs:root=BATTERY_USAGE
 - `通用设置` Prefs:root=General

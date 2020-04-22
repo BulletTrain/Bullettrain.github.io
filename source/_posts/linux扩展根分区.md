@@ -1,9 +1,9 @@
+---
 title: linux扩展根分区
 date: 2015-01-15 16:41:06
 categories: linux
 tags: 分区
 copyright: true
-
 ---
 
 现况，现有一台服务器根分区空间不足了，目前有个一块sda硬盘未使用

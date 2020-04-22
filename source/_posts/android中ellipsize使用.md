@@ -1,9 +1,9 @@
+---
 title: android中ellipsize使用
 date: 2014-11-23 13:57:12
 categories: android
 tags: ellipsize
 copyright: true
-
 ---
 
 TextView文本过长的情况,使用ellipsize属性即可内容过长的情况自动加省略号

@@ -1,14 +1,10 @@
+---
 title: Git撤销未提交的commit操作
-
 date: 2018-11-20 21:10:53
-
 categories: Tools
-
 tags: Git
-
 copyright: true
-
-------
+---
 
 
 

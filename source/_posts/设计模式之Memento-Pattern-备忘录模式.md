@@ -1,14 +1,10 @@
+---
 title: 设计模式之Memento Pattern(备忘录模式)
-
 date: 2016-02-04 09:41:38
-
 categories: 设计模式
-
 tags: Memento Pattern
-
 copyright: true
-
------
+---
 
 ## 简介
 

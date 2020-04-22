@@ -1,14 +1,10 @@
+---
 title: win10安装tensorflow-gpu版本
-
 date: 2017-02-05 19:37:44
-
 categories: 深度学习
-
 tags: [tensorflow,win10]
-
 copyright: true
-
-------
+---
 
 ## 安装前准备
 

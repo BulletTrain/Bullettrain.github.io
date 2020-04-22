@@ -1,3 +1,6 @@
 [submodule "themes/next"]
 	path = themes/next
-	url = https://github.com/BulletTrain/hexo-theme-next.git
+	url = git@github.com:BulletTrain/hexo-theme-next.git
+[submodule "themes/fluid"]
+	path = themes/fluid
+url=git@github.com:BulletTrain/hexo-theme-fluid.git

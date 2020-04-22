@@ -1,14 +1,10 @@
+---
 title: Mac搭建Ruby环境
-
 date: 2014-12-29 19:44:39
-
 categories: iOS
-
 tags: Ruby
-
 copyright: true
-
-------
+---
 
 ## 安装系统需要的包
 
